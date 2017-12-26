@@ -4,6 +4,7 @@
 #include "stm32f10x.h"
 #include "Types.h"
 void loopback_udp(SOCKET s, uint16 port);
+void dma_udp(SOCKET s, uint16 port, int distance);
 #endif 
 
 

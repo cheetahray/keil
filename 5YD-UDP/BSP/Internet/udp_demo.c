@@ -54,5 +54,18 @@ void loopback_udp(SOCKET s, uint16 port)
 	}
 }
 
+void dma_udp(SOCKET s, uint16 port, int distance)
+{
+    uint16 len=0;
+	uint8 buff[32];                                                          /*定义一个2KB的缓存*/	
+				
+    len = tosc_writeMessage(buff, sizeof(buff), "/Hit", // the address
+                            "iii",   // the format; 'f':32-bit float, 's':ascii string, 'i':32-bit integer
+                            ray_remote_ip[3], 3, distance);
+				
+    sendto(s, buff, len, ray_remote_ip, ray_remote_port);                /*W5500把接收到的数据发送给Remote*/
+
+}
+
 
 

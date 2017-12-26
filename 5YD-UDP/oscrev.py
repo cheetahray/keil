@@ -17,24 +17,21 @@ def handle_timeout(self):
 import types
 server.handle_timeout = types.MethodType(handle_timeout, server)
 
-def user_callback(path, tags, args, source):
+def hit_callback(path, tags, args, source):
     # which user will be determined by path:
     # we just throw away all slashes and join together what's left
-    # user = ''.join(path.split("/"))
+    user = ''.join(path.split("/"))
     # tags will contain 'fff'
     # args is a OSCMessage with data
     # source is where the message came from (in case you need to reply)
-    print ("Now do something with", args[0], args[1], args[2]) 
+    print (user, args[0], args[1], args[2]) 
 
 def quit_callback(path, tags, args, source):
     # don't do this at home (or it'll quit blender)
     global run
     run = False
 
-server.addMsgHandler( "/user/1", user_callback )
-server.addMsgHandler( "/user/2", user_callback )
-server.addMsgHandler( "/user/3", user_callback )
-server.addMsgHandler( "/user/4", user_callback )
+server.addMsgHandler( "/Hit", hit_callback )
 server.addMsgHandler( "/quit", quit_callback )
 
 # user script that's called by the game engine every frame

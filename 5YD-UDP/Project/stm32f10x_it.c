@@ -24,6 +24,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
 #include "w5500_conf.h"
+#include "usart.h"
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
   */
@@ -181,5 +182,33 @@ void TIM2_IRQHandler(void)
   * @}
   */ 
 
-
+extern DMA_InitTypeDef DMA_InitStructure;
+/**********************************************************
+** 函数名:void DMA1_Channel5_IRQHandler(void)
+** 功能描述: DMA中断服务程序
+** 输入参数: 无
+** 输出参数: 无 
+***********************************************************/
+void DMA1_Channel5_IRQHandler(void)
+{
+	if(DMA_GetITStatus(DMA1_IT_TC5))
+ 	{
+	    //DataCounter = DMA_GetCurrDataCounter(DMA1_Channel5);//获取剩余长度,一般都为0,调试用
+	    DMA_ClearITPendingBit(DMA1_IT_GL5);	//清除全部中断标志										     
+		//转换可操作BUF
+		if(Free_Buf_No==BUF_NO1) //如果BUF1空闲，将DMA接收数据赋值给BUF1
+		{	
+			DMA_InitStructure.DMA_MemoryBaseAddr = (u32)USART1_DMA_Buf1;
+			DMA_Init(DMA1_Channel5, &DMA_InitStructure);
+			Free_Buf_No=BUF_NO2;
+		}
+		else  //如果BUF2空闲，将DMA接收数据赋值给BUF2
+		{
+			DMA_InitStructure.DMA_MemoryBaseAddr = (u32)USART1_DMA_Buf2;
+			DMA_Init(DMA1_Channel5, &DMA_InitStructure);
+			Free_Buf_No=BUF_NO1;
+		}
+		Buf_Ok=TRUE;	
+ 	}
+}
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

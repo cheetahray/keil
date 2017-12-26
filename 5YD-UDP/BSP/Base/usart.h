@@ -14,6 +14,14 @@
 #define USART_RX		        	GPIO_Pin_10	// in 
 #define USART_GPIO_PORT    		GPIOA   
 
+typedef enum {FALSE = 0, TRUE = !FALSE} bool;
+#define dma_len 100  //定义串口DMA传输数据长度
+extern u8 USART1_DMA_Buf1[dma_len]; //BUF1
+extern u8 USART1_DMA_Buf2[dma_len];	//BUF2
+typedef enum {BUF_NO1=0,BUF_NO2=1}BUF_NO;
+extern BUF_NO Free_Buf_No;
+extern bool Buf_Ok;
 
+void USART_DMAToBuf1(void);
 void USART1_Config(void);
 #endif
