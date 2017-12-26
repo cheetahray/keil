@@ -106,6 +106,7 @@ Section Cross References
     tinyosc.o(.text) refers to d2f.o(.text) for __aeabi_d2f
     tinyosc.o(.text) refers to printfa.o(i.__0printf) for __2printf
     tinyosc.o(.text) refers to f2d.o(.text) for __aeabi_f2d
+    radarsensor.o(.text) refers to radarsensor.o(.data) for cbit
     entry.o(.ARM.Collect$$$$00000000) refers (Special) to entry10a.o(.ARM.Collect$$$$0000000D) for __rt_final_cpp
     entry.o(.ARM.Collect$$$$00000000) refers (Special) to entry11a.o(.ARM.Collect$$$$0000000F) for __rt_final_exit
     entry.o(.ARM.Collect$$$$00000000) refers (Special) to entry7b.o(.ARM.Collect$$$$00000008) for _main_clock
@@ -402,8 +403,10 @@ Removing Unused input sections from the image.
     Removing dhcp.o(.text), (3692 bytes).
     Removing dhcp.o(.conststring), (5 bytes).
     Removing dhcp.o(.data), (65 bytes).
+    Removing radarsensor.o(.text), (80 bytes).
+    Removing radarsensor.o(.data), (256 bytes).
 
-23 unused section(s) (total 15206 bytes) removed from the image.
+25 unused section(s) (total 15542 bytes) removed from the image.
 
 ==============================================================================
 
@@ -415,32 +418,32 @@ Image Symbol Table
 
     ../clib/microlib/division.c              0x00000000   Number         0  uidiv.o ABSOLUTE
     ../clib/microlib/division.c              0x00000000   Number         0  uldiv.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
-    ../clib/microlib/longlong.c              0x00000000   Number         0  llsshr.o ABSOLUTE
-    ../clib/microlib/longlong.c              0x00000000   Number         0  llushr.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llshl.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf4.o ABSOLUTE
+    ../clib/microlib/longlong.c              0x00000000   Number         0  llushr.o ABSOLUTE
+    ../clib/microlib/longlong.c              0x00000000   Number         0  llsshr.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf3.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf2.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf1.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf0.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfb.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf5.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf8.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf6.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf7.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf8.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf5.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf4.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfa.o ABSOLUTE
     ../clib/microlib/printf/stubs.s          0x00000000   Number         0  stubs.o ABSOLUTE
     ../clib/microlib/stdio/streams.c         0x00000000   Number         0  stdout.o ABSOLUTE
@@ -459,8 +462,8 @@ Image Symbol Table
     ../fplib/microlib/f2d.c                  0x00000000   Number         0  f2d.o ABSOLUTE
     ../fplib/microlib/fpadd.c                0x00000000   Number         0  dadd.o ABSOLUTE
     ../fplib/microlib/fpdiv.c                0x00000000   Number         0  ddiv.o ABSOLUTE
-    ../fplib/microlib/fpepilogue.c           0x00000000   Number         0  fepilogue.o ABSOLUTE
     ../fplib/microlib/fpepilogue.c           0x00000000   Number         0  depilogue.o ABSOLUTE
+    ../fplib/microlib/fpepilogue.c           0x00000000   Number         0  fepilogue.o ABSOLUTE
     ../fplib/microlib/fpfix.c                0x00000000   Number         0  dfixul.o ABSOLUTE
     ../fplib/microlib/fpmul.c                0x00000000   Number         0  dmul.o ABSOLUTE
     ..\..\BSP\Base\SPIx.c                    0x00000000   Number         0  spix.o ABSOLUTE
@@ -470,6 +473,7 @@ Image Symbol Table
     ..\..\BSP\Base\timer.c                   0x00000000   Number         0  timer.o ABSOLUTE
     ..\..\BSP\Base\usart.c                   0x00000000   Number         0  usart.o ABSOLUTE
     ..\..\BSP\Internet\dhcp.c                0x00000000   Number         0  dhcp.o ABSOLUTE
+    ..\..\BSP\Internet\radarsensor.c         0x00000000   Number         0  radarsensor.o ABSOLUTE
     ..\..\BSP\Internet\tinyosc.c             0x00000000   Number         0  tinyosc.o ABSOLUTE
     ..\..\BSP\Internet\udp_demo.c            0x00000000   Number         0  udp_demo.o ABSOLUTE
     ..\..\BSP\W5500\socket.c                 0x00000000   Number         0  socket.o ABSOLUTE
@@ -1136,15 +1140,15 @@ Memory Map of the image
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x08000000   0x000000ec   Data   RO            3    RESET               startup_stm32f10x_md.o
-    0x080000ec   0x00000000   Code   RO          736  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
-    0x080000ec   0x00000004   Code   RO         1026    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
-    0x080000f0   0x00000004   Code   RO         1029    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
-    0x080000f4   0x00000000   Code   RO         1031    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
-    0x080000f4   0x00000000   Code   RO         1033    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
-    0x080000f4   0x00000008   Code   RO         1034    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
-    0x080000fc   0x00000000   Code   RO         1036    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
-    0x080000fc   0x00000000   Code   RO         1038    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
-    0x080000fc   0x00000004   Code   RO         1027    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
+    0x080000ec   0x00000000   Code   RO          752  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
+    0x080000ec   0x00000004   Code   RO         1042    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
+    0x080000f0   0x00000004   Code   RO         1045    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
+    0x080000f4   0x00000000   Code   RO         1047    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
+    0x080000f4   0x00000000   Code   RO         1049    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
+    0x080000f4   0x00000008   Code   RO         1050    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
+    0x080000fc   0x00000000   Code   RO         1052    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
+    0x080000fc   0x00000000   Code   RO         1054    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
+    0x080000fc   0x00000004   Code   RO         1043    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
     0x08000100   0x00000024   Code   RO            4    .text               startup_stm32f10x_md.o
     0x08000124   0x00000104   Code   RO           10    .text               main.o
     0x08000228   0x00000048   Code   RO          152    .text               stm32f10x_it.o
@@ -1168,43 +1172,43 @@ Memory Map of the image
     0x08003640   0x0000053c   Code   RO          633    .text               w5500_conf.o
     0x08003b7c   0x000000dc   Code   RO          693    .text               udp_demo.o
     0x08003c58   0x00000844   Code   RO          711    .text               tinyosc.o
-    0x0800449c   0x00000024   Code   RO          739    .text               mc_w.l(memcpya.o)
-    0x080044c0   0x00000024   Code   RO          741    .text               mc_w.l(memseta.o)
-    0x080044e4   0x00000024   Code   RO          743    .text               mc_w.l(strstr.o)
-    0x08004508   0x00000018   Code   RO          745    .text               mc_w.l(strncpy.o)
-    0x08004520   0x0000000e   Code   RO          747    .text               mc_w.l(strlen.o)
-    0x0800452e   0x0000001a   Code   RO          749    .text               mc_w.l(memcmp.o)
-    0x08004548   0x00000012   Code   RO          751    .text               mc_w.l(strcpy.o)
+    0x0800449c   0x00000024   Code   RO          755    .text               mc_w.l(memcpya.o)
+    0x080044c0   0x00000024   Code   RO          757    .text               mc_w.l(memseta.o)
+    0x080044e4   0x00000024   Code   RO          759    .text               mc_w.l(strstr.o)
+    0x08004508   0x00000018   Code   RO          761    .text               mc_w.l(strncpy.o)
+    0x08004520   0x0000000e   Code   RO          763    .text               mc_w.l(strlen.o)
+    0x0800452e   0x0000001a   Code   RO          765    .text               mc_w.l(memcmp.o)
+    0x08004548   0x00000012   Code   RO          767    .text               mc_w.l(strcpy.o)
     0x0800455a   0x00000002   PAD
-    0x0800455c   0x00000044   Code   RO          753    .text               mc_w.l(strtok.o)
-    0x080045a0   0x00000026   Code   RO         1022    .text               mf_w.l(f2d.o)
-    0x080045c6   0x00000038   Code   RO         1024    .text               mf_w.l(d2f.o)
-    0x080045fe   0x0000002c   Code   RO         1041    .text               mc_w.l(uidiv.o)
-    0x0800462a   0x00000062   Code   RO         1043    .text               mc_w.l(uldiv.o)
-    0x0800468c   0x00000000   Code   RO         1045    .text               mc_w.l(iusefp.o)
-    0x0800468c   0x0000006c   Code   RO         1046    .text               mf_w.l(fepilogue.o)
-    0x080046f8   0x0000014e   Code   RO         1048    .text               mf_w.l(dadd.o)
-    0x08004846   0x000000e4   Code   RO         1050    .text               mf_w.l(dmul.o)
-    0x0800492a   0x000000de   Code   RO         1052    .text               mf_w.l(ddiv.o)
-    0x08004a08   0x00000030   Code   RO         1054    .text               mf_w.l(dfixul.o)
-    0x08004a38   0x00000028   Code   RO         1056    .text               mf_w.l(cdrcmple.o)
-    0x08004a60   0x00000024   Code   RO         1058    .text               mc_w.l(init.o)
-    0x08004a84   0x0000001e   Code   RO         1060    .text               mc_w.l(llshl.o)
-    0x08004aa2   0x00000020   Code   RO         1062    .text               mc_w.l(llushr.o)
-    0x08004ac2   0x00000024   Code   RO         1064    .text               mc_w.l(llsshr.o)
-    0x08004ae6   0x000000be   Code   RO         1066    .text               mf_w.l(depilogue.o)
-    0x08004ba4   0x00000020   Code   RO          994    i.__0printf         mc_w.l(printfa.o)
-    0x08004bc4   0x00000028   Code   RO          996    i.__0sprintf        mc_w.l(printfa.o)
-    0x08004bec   0x0000000e   Code   RO         1070    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x08004bfa   0x00000002   Code   RO         1071    i.__scatterload_null  mc_w.l(handlers.o)
-    0x08004bfc   0x0000000e   Code   RO         1072    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x0800455c   0x00000044   Code   RO          769    .text               mc_w.l(strtok.o)
+    0x080045a0   0x00000026   Code   RO         1038    .text               mf_w.l(f2d.o)
+    0x080045c6   0x00000038   Code   RO         1040    .text               mf_w.l(d2f.o)
+    0x080045fe   0x0000002c   Code   RO         1057    .text               mc_w.l(uidiv.o)
+    0x0800462a   0x00000062   Code   RO         1059    .text               mc_w.l(uldiv.o)
+    0x0800468c   0x00000000   Code   RO         1061    .text               mc_w.l(iusefp.o)
+    0x0800468c   0x0000006c   Code   RO         1062    .text               mf_w.l(fepilogue.o)
+    0x080046f8   0x0000014e   Code   RO         1064    .text               mf_w.l(dadd.o)
+    0x08004846   0x000000e4   Code   RO         1066    .text               mf_w.l(dmul.o)
+    0x0800492a   0x000000de   Code   RO         1068    .text               mf_w.l(ddiv.o)
+    0x08004a08   0x00000030   Code   RO         1070    .text               mf_w.l(dfixul.o)
+    0x08004a38   0x00000028   Code   RO         1072    .text               mf_w.l(cdrcmple.o)
+    0x08004a60   0x00000024   Code   RO         1074    .text               mc_w.l(init.o)
+    0x08004a84   0x0000001e   Code   RO         1076    .text               mc_w.l(llshl.o)
+    0x08004aa2   0x00000020   Code   RO         1078    .text               mc_w.l(llushr.o)
+    0x08004ac2   0x00000024   Code   RO         1080    .text               mc_w.l(llsshr.o)
+    0x08004ae6   0x000000be   Code   RO         1082    .text               mf_w.l(depilogue.o)
+    0x08004ba4   0x00000020   Code   RO         1010    i.__0printf         mc_w.l(printfa.o)
+    0x08004bc4   0x00000028   Code   RO         1012    i.__0sprintf        mc_w.l(printfa.o)
+    0x08004bec   0x0000000e   Code   RO         1086    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x08004bfa   0x00000002   Code   RO         1087    i.__scatterload_null  mc_w.l(handlers.o)
+    0x08004bfc   0x0000000e   Code   RO         1088    i.__scatterload_zeroinit  mc_w.l(handlers.o)
     0x08004c0a   0x00000002   PAD
-    0x08004c0c   0x0000015c   Code   RO         1001    i._fp_digits        mc_w.l(printfa.o)
-    0x08004d68   0x000006f0   Code   RO         1002    i._printf_core      mc_w.l(printfa.o)
-    0x08005458   0x00000026   Code   RO         1003    i._printf_post_padding  mc_w.l(printfa.o)
-    0x0800547e   0x00000030   Code   RO         1004    i._printf_pre_padding  mc_w.l(printfa.o)
-    0x080054ae   0x0000000a   Code   RO         1006    i._sputc            mc_w.l(printfa.o)
-    0x080054b8   0x00000020   Data   RO         1068    Region$$Table       anon$$obj.o
+    0x08004c0c   0x0000015c   Code   RO         1017    i._fp_digits        mc_w.l(printfa.o)
+    0x08004d68   0x000006f0   Code   RO         1018    i._printf_core      mc_w.l(printfa.o)
+    0x08005458   0x00000026   Code   RO         1019    i._printf_post_padding  mc_w.l(printfa.o)
+    0x0800547e   0x00000030   Code   RO         1020    i._printf_pre_padding  mc_w.l(printfa.o)
+    0x080054ae   0x0000000a   Code   RO         1022    i._sputc            mc_w.l(printfa.o)
+    0x080054b8   0x00000020   Data   RO         1084    Region$$Table       anon$$obj.o
 
 
     Execution Region RW_IRAM1 (Base: 0x20000000, Size: 0x00001910, Max: 0x00005000, ABSOLUTE)
@@ -1218,8 +1222,8 @@ Memory Map of the image
     0x2000002c   0x00000010   Data   RW          616    .data               w5500.o
     0x2000003c   0x00000032   Data   RW          635    .data               w5500_conf.o
     0x2000006e   0x00000002   PAD
-    0x20000070   0x00000004   Data   RW          754    .data               mc_w.l(strtok.o)
-    0x20000074   0x00000004   Data   RW         1040    .data               mc_w.l(stdout.o)
+    0x20000070   0x00000004   Data   RW          770    .data               mc_w.l(strtok.o)
+    0x20000074   0x00000004   Data   RW         1056    .data               mc_w.l(stdout.o)
     0x20000078   0x00000030   Zero   RW          598    .bss                utility.o
     0x200000a8   0x00000020   Zero   RW          615    .bss                w5500.o
     0x200000c8   0x0000102e   Zero   RW          634    .bss                w5500_conf.o
@@ -1235,31 +1239,31 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-         0          0          0          0       1046       4378   dhcp.o
-      1160        178          0          0          0       3411   i2c.o
-       260        190          0          0          0     259303   main.o
-       220         20          0          0          0       1801   misc.o
-      1676         48          0          0          0       3767   socket.o
-       140          4          0          0          0        689   spix.o
-        36          8        236          0       1024        872   startup_stm32f10x_md.o
-       856         40          0          0          0       5645   stm32f10x_gpio.o
-        72          4          0          2          0       3326   stm32f10x_it.o
-       932         44          0         20          0       8776   stm32f10x_rcc.o
-       780         14          0          0          0       6526   stm32f10x_spi.o
-      3610         88          0          0          0      22128   stm32f10x_tim.o
-      1032         22          0          0          0       8368   stm32f10x_usart.o
-       476         36          0         20          0       1875   system_stm32f10x.o
-       148         20          0          0          0      16092   systick.o
-       150          0          0          0          0        643   timer.o
-      2116        182          0          0          0       8355   tinyosc.o
-       220         50          0          0          0       1131   udp_demo.o
-       192          8          0          0          0        762   usart.o
-       908         46          0          0         48       5551   utility.o
-       980         72          0         16         32       5624   w5500.o
-      1340        334          0         50       4142       6174   w5500_conf.o
+         0          0          0          0       1046       4398   dhcp.o
+      1160        178          0          0          0       3423   i2c.o
+       260        190          0          0          0     259355   main.o
+       220         20          0          0          0       1809   misc.o
+      1676         48          0          0          0       3783   socket.o
+       140          4          0          0          0        697   spix.o
+        36          8        236          0       1024        876   startup_stm32f10x_md.o
+       856         40          0          0          0       5653   stm32f10x_gpio.o
+        72          4          0          2          0       3342   stm32f10x_it.o
+       932         44          0         20          0       8792   stm32f10x_rcc.o
+       780         14          0          0          0       6534   stm32f10x_spi.o
+      3610         88          0          0          0      22136   stm32f10x_tim.o
+      1032         22          0          0          0       8380   stm32f10x_usart.o
+       476         36          0         20          0       1887   system_stm32f10x.o
+       148         20          0          0          0      16104   systick.o
+       150          0          0          0          0        651   timer.o
+      2116        182          0          0          0       8367   tinyosc.o
+       220         50          0          0          0       1139   udp_demo.o
+       192          8          0          0          0        770   usart.o
+       908         46          0          0         48       5571   utility.o
+       980         72          0         16         32       5636   w5500.o
+      1340        334          0         50       4142       6198   w5500_conf.o
 
     ----------------------------------------------------------------------
-     17308       1408        268        112       6296     375197   Object Totals
+     17308       1408        268        112       6296     375501   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          4          0          0          4          4          0   (incl. Padding)
 
@@ -1324,8 +1328,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     21452       1528        268        120       6296     374405   Grand Totals
-     21452       1528        268        120       6296     374405   ELF Image Totals
+     21452       1528        268        120       6296     374709   Grand Totals
+     21452       1528        268        120       6296     374709   ELF Image Totals
      21452       1528        268        120          0          0   ROM Totals
 
 ==============================================================================

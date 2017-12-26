@@ -1181,4 +1181,6 @@ I (..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h)(0x4D783BB4)
 I (..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h)(0x4D783BB4)
 I (..\..\BSP\Internet\tinyosc.h)(0x5A38DA03)
 I (C:\Keil\ARM\ARMCC\bin\..\include\stdbool.h)(0x50F96150)
+F (..\..\BSP\Internet\radarsensor.c)(0x5A40D3F9)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\..\Libraries\CMSIS\CM3\CoreSupport -I..\..\\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x -I..\..\Libraries\STM32F10x_StdPeriph_Driver\inc -I..\..\Libraries\STM32F10x_StdPeriph_Driver\src -I..\..\Project -I..\..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\arm -I..\..\BSP\Base -I..\..\BSP\Internet -I..\..\BSP\W5500 -I C:\Keil\ARM\RV31\INC -I C:\Keil\ARM\CMSIS\Include -I C:\Keil\ARM\Inc\ST\STM32F10x -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -o ".\obj\radarsensor.o" --omf_browse ".\obj\radarsensor.crf" --depend ".\obj\radarsensor.d")
+I (..\..\BSP\Internet\radarsensor.h)(0x5A40D17C)
 F (..\..\doc\readme.txt)(0x59689478)()
