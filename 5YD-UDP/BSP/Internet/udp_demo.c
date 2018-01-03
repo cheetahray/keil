@@ -44,10 +44,10 @@ void loopback_udp(SOCKET s, uint16 port)
                 buff[len-8]=0x00;                                                    /*添加字符串结束符*/
                 printf("%s\r\n",buff);                                               /*打印接收缓存*/ 
 				
-                len = tosc_writeMessage(buff, sizeof(buff), "/user/1", // the address
-                                        "fsi",   // the format; 'f':32-bit float, 's':ascii string, 'i':32-bit integer
-                                        1.0f, "hello", 2);
-				
+                len = tosc_writeMessage(buff, sizeof(buff), "/Hit", // the address
+                            "iii",   // the format; 'f':32-bit float, 's':ascii string, 'i':32-bit integer
+                            ray_remote_ip[3], 3, 122);
+	
                 sendto(s, buff, len, ray_remote_ip, ray_remote_port);                /*W5500把接收到的数据发送给Remote*/
 			}
 			break;

@@ -35,14 +35,14 @@
 ***********************************************************/
 void NVIC_Config(void)
 {
-	NVIC_InitTypeDef NVIC_InitStructure;
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//采用组2
+    NVIC_InitTypeDef NVIC_InitStructure;
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//采用组2
 
-	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel5_IRQn;//DMA1通道5中断
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; //先占式优先级设为0
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;//副优先级设为0
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	//中断向量使能
-	NVIC_Init(&NVIC_InitStructure);	//初始化结构体
+    NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel5_IRQn;//DMA1通道5中断
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; //先占式优先级设为0
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;//副优先级设为0
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	//中断向量使能
+    NVIC_Init(&NVIC_InitStructure);	//初始化结构体
 }
 /**
   * @file   main
@@ -52,15 +52,16 @@ void NVIC_Config(void)
   */
 int main(void)
 {
-    u16 x1=0,x2=0;
+    u16 x1=0,x2=0, dist = 0;
     SYSTICK_Init();
     USART1_Config();
-    //LED_GPIO_Config();
+    LED_GPIO_Config();
     //I2C_Configuration();
+    delay_ms(1000);
+    WizW5500_Init(IP_FROM_DEFINE);
     NVIC_Config();//中断等级配置
     USART_DMAToBuf1();//串口DMA配置
-	printf("  源地仪器设备----UDP Demo V1.0 \r\n");		
-    WizW5500_Init(IP_FROM_DEFINE);	
+    printf("  源地仪器设备----UDP Demo V1.0 \r\n");
     printf(" W5500可以和电脑的UDP端口通讯 \r\n");
     printf(" W5500的本地端口为:%d \r\n",local_port);
     printf(" 远端端口为:%d \r\n",remote_port);
@@ -68,44 +69,49 @@ int main(void)
     while (1)
     {
         if(Buf_Ok==TRUE)//BUF可用
-		{
-			Buf_Ok=FALSE;  
-			x1=0;
-			x2=0;
-			if(Free_Buf_No==BUF_NO1)//如果BUF1空闲
-			{
-				while(x1<dma_len)
-				{
-					//USART1_Putc(USART1_DMA_Buf1[x1++]);	//用串口1将BUF1中数据发送出去
+        {
+            Buf_Ok=FALSE;
+            x1=0;
+            x2=0;
+            if(Free_Buf_No==BUF_NO1)//如果BUF1空闲
+            {
+                while(x1<dma_len)
+                {
+                    //USART1_Putc(USART1_DMA_Buf1[x1++]);	//用串口1将BUF1中数据发送出去
                     if( (0 == (USART1_DMA_Buf1[x1]&0x80)) && (0 == (USART1_DMA_Buf1[x1+1]&0x80)) && (128 == (USART1_DMA_Buf1[x1+2]&0x80)) )
                     {
                         //printf("%c%c%c", USART1_DMA_Buf1[x1], USART1_DMA_Buf1[x1+1], USART1_DMA_Buf1[x1+2]);
                         //printf("%d ", DecodeLaseData3Byte(USART1_DMA_Buf1+x1));
-                        dma_udp(SOCK_UDPS, remote_port, DecodeLaseData3Byte(USART1_DMA_Buf1+x1));
+                        dist = DecodeLaseData3Byte(USART1_DMA_Buf1+x1);
+                        if ( dist > 0 && dist < 170)
+                            dma_udp(SOCK_UDPS, remote_port, dist);
                         x1+=3;
                     }
                     else
-                        x1++;                    
-				}	
-			}
-			else //如果BUF2空闲
-			{
-				while(x2<dma_len)
-				{
-					//USART1_Putc(USART1_DMA_Buf2[x2++]);	//用串口1将BUF2中数据发送出去
+                        x1++;
+                }
+            }
+            else //如果BUF2空闲
+            {
+                while(x2<dma_len)
+                {
+                    //USART1_Putc(USART1_DMA_Buf2[x2++]);	//用串口1将BUF2中数据发送出去
                     if( (0 == (USART1_DMA_Buf2[x2]&0x80)) && (0 == (USART1_DMA_Buf2[x2+1]&0x80)) && (128 == (USART1_DMA_Buf2[x2+2]&0x80)) )
                     {
                         //printf("%c%c%c", USART1_DMA_Buf2[x2], USART1_DMA_Buf2[x2+1], USART1_DMA_Buf2[x2+2]);
                         //printf("%d ", DecodeLaseData3Byte(USART1_DMA_Buf2+x2));
-                        dma_udp(SOCK_UDPS, remote_port, DecodeLaseData3Byte(USART1_DMA_Buf2+x2));
+                        dist = DecodeLaseData3Byte(USART1_DMA_Buf2+x2);
+                        if ( dist > 0 && dist < 170)
+                            dma_udp(SOCK_UDPS, remote_port, dist);
                         x2+=3;
                     }
                     else
                         x2++;
                 }
-			} 
-        }            
-        //loopback_udp(SOCK_UDPS, local_port);/*UDP 数据回环测试*/
+            }
+        }
+        else
+            loopback_udp(SOCK_UDPS, local_port);/*UDP 数据回环测试*/
     }
 }
 

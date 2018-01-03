@@ -38,6 +38,8 @@ void LED_GPIO_Config(void)
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 			 
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(LED3_GPIO_PORT, &GPIO_InitStructure);
+    LED2_ONOFF(Bit_SET);
+    LED3_ONOFF(Bit_SET);
 }
 
  /**

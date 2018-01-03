@@ -621,6 +621,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\BSP\Internet\tinyosc.c</FilePath>
             </File>
+            <File>
+              <FileName>radarsensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\BSP\Internet\radarsensor.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
