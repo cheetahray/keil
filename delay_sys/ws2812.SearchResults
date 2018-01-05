@@ -1,0 +1,6 @@
+---- GPIO_Mode_AIN Matches (2 in 1 files) ----
+Stm32f10x_gpio.h (libraries\stm32f10x_stdperiph_driver\inc):{ GPIO_Mode_AIN = 0x0,
+Stm32f10x_gpio.h (libraries\stm32f10x_stdperiph_driver\inc):#define IS_GPIO_MODE(MODE) (((MODE) == GPIO_Mode_AIN) || ((MODE) == GPIO_Mode_IN_FLOATING) || \
+---- GPIO_Mode_AIN Search Errors Encountered (1) ----
+The following 1 files could not be processed:
+D:\Documents\keil\delay_sys\Project\JLinkLog.txt : File could not be opened.
