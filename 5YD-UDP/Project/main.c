@@ -57,7 +57,7 @@ int main(void)
     USART1_Config();
     LED_GPIO_Config();
     //I2C_Configuration();
-    delay_ms(1000);
+    delay_ms(1500);
     WizW5500_Init(IP_FROM_DEFINE);
     NVIC_Config();//中断等级配置
     USART_DMAToBuf1();//串口DMA配置
