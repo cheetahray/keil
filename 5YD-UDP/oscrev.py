@@ -5,7 +5,7 @@ from time import sleep
 import random
 
 cc = OSCClient()
-cc.connect(('192.168.12.249', 7000))   # localhost, port 57120
+cc.connect(('192.168.1.200', 6666))   # localhost, port 57120
 
 def click(msg,arg0,arg1):
     global cc
@@ -40,12 +40,23 @@ def hit_callback(path, tags, args, source):
     print (path, args[0], args[1], args[2])
     #click (path, args[1], args[2])    
 
+def get_callback(path, tags, args, source):
+    # which user will be determined by path:
+    # we just throw away all slashes and join together what's left
+    # user = ''.join(path.split("/"))
+    # tags will contain 'fff'
+    # args is a OSCMessage with data
+    # source is where the message came from (in case you need to reply)
+    print (path, args[0], args[1])
+    #click (path, args[1], args[2])    
+
 def quit_callback(path, tags, args, source):
     # don't do this at home (or it'll quit blender)
     global run
     run = False
 
 server.addMsgHandler( "/Hit", hit_callback )
+server.addMsgHandler( "/Get", get_callback )
 server.addMsgHandler( "/quit", quit_callback )
 
 # user script that's called by the game engine every frame

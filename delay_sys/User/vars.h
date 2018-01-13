@@ -10,7 +10,7 @@
 #define PWM_HIGH_WIDTH              17                              // Duty cycle of pwm signal for a logical 1 to be read by the ws2812 chip. Duty cycle = PWM_HIGH_WIDTH/TIM_PERIOD*100
 #define PWM_LOW_WIDTH               9                               // Duty cycle of pwm signal for a logical 0 to be read by the ws2812 chip. Duty cycle = PWM_LOW_WIDTH/TIM_PERIOD*100
 
-#define COLUMBS                     241
+#define COLUMBS                     41
 #define ROWS                        1
 
 /* Buffer that holds one complete DMA transmission.

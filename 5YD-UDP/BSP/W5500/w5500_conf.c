@@ -23,12 +23,12 @@ CONFIG_MSG  ConfigMsg;																	/*配置结构体*/
 EEPROM_MSG_STR EEPROM_MSG;															/*EEPROM存储信息结构体*/
 
 /*定义MAC地址,如果多块W5500网络适配板在同一现场工作，请使用不同的MAC地址*/
-uint8 mac[6]={0x00,0x08,0xdc,0x11,0x11,0x11};
+uint8 mac[6]={0x02,0x77,0x30,0x48,0x08,0x50};
 
 /*定义默认IP信息*/
-uint8 local_ip[4]={192,168,11,60};												/*定义W5500默认IP地址*/
+uint8 local_ip[4]={192,168,1,50};												/*定义W5500默认IP地址*/
 uint8 subnet[4]={255,255,255,0};												/*定义W5500默认子网掩码*/
-uint8 gateway[4]={192,168,11,1};													/*定义W5500默认网关*/
+uint8 gateway[4]={192,168,1,254};													/*定义W5500默认网关*/
 uint8 dns_server[4]={139,175,1,1};									/*定义W5500默认DNS*/
 
 uint8	ip_from;
@@ -36,8 +36,8 @@ uint8	ip_from;
 uint16 local_port=5000;	                       					/*定义本地端口*/
 
 /*定义远端IP信息*/
-uint8  remote_ip[4]={192,168,11,102};										/*远端IP地址*/
-uint8  ray_remote_ip[4]={192,168,11,102};										/*远端IP地址*/
+uint8  remote_ip[4]={192,168,1,201};										/*远端IP地址*/
+uint8  ray_remote_ip[4]={192,168,1,201};										/*远端IP地址*/
 uint16 remote_port=7110;																/*远端端口号*/
 uint16 ray_remote_port=7110;																/*远端端口号*/
 
