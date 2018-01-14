@@ -95,7 +95,7 @@ def get_callback(path, tags, args, source):
     # args is a OSCMessage with data
     # source is where the message came from (in case you need to reply)
     print (path, args[0], args[1])
-    click (path, args[1], ( (220 * args[1]) >> 7 ) - 100)  #220 * Y / 128 - 100  
+    click (path, args[0], ( (220 * args[1]) >> 7 ) - 100)  #220 * Y / 128 - 100  
     
 def game_callback(path, tags, args, source):
     # don't do this at home (or it'll quit blender)
@@ -136,7 +136,7 @@ def each_frame():
     while not server.timed_out:
         server.handle_request()
 
-over("/GameShow", 0)
+#over("/GameShow", 0)
 # simulate a "game engine"
 while run:
     # do the game stuff:
