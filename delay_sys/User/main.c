@@ -65,7 +65,7 @@ int main() {
         // Reset LEDs
         send_data(led_Colors, LED_COUNT);
 
-        animation_Select = 0;
+        animation_Select = 4;
 
         while (1){  
             

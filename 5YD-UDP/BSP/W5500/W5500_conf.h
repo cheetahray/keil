@@ -8,7 +8,7 @@
 #define __GNUC__
 
 typedef  void (*pFunction)(void);
-
+extern uint8  	local_ip[4];															/*Ô¶¶ËIPµØÖ·*/
 extern uint8  	remote_ip[4];															/*Ô¶¶ËIPµØÖ·*/
 extern uint8  	ray_remote_ip[4];															/*Ô¶¶ËIPµØÖ·*/
 extern uint16 	remote_port;															/*Ô¶¶Ë¶Ë¿ÚºÅ*/
