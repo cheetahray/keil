@@ -1,6 +1,27 @@
 #include <stm32f10x.h>
 #include <stdbool.h>
 
+#define GPIO_BROWN_2_0              GPIO_Pin_0
+#define GPIO_ORANGE_2_1             GPIO_Pin_1
+#define GPIO_YELLOW_2_2             GPIO_Pin_12
+#define GPIO_GREEN_2_3              GPIO_Pin_3
+#define GPIO_BLUE_2_4               GPIO_Pin_4
+#define GPIO_BLUEWHITE_2_5          GPIO_Pin_5
+#define GPIO_GRAY_2_6               GPIO_Pin_6
+#define GPIO_GRAYWHITE_2_7          GPIO_Pin_7
+#define GPIO_BROWNWHITE_DIRECTION   GPIO_Pin_8
+#define ROTARY_ENCODER_ANGLE        GPIOB
+
+#define _2_0_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_BROWN_2_0)/* GPIOB->IDR  & GPIO_Pin_6   */
+#define _2_1_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_ORANGE_2_1)/*GPIOB->IDR  & GPIO_Pin_7	  */
+#define _2_2_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_YELLOW_2_2)/* GPIOB->IDR  & GPIO_Pin_6   */
+#define _2_3_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_GREEN_2_3)/*GPIOB->IDR  & GPIO_Pin_7	  */
+#define _2_4_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_BLUE_2_4)/* GPIOB->IDR  & GPIO_Pin_6   */
+#define _2_5_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_BLUEWHITE_2_5)/*GPIOB->IDR  & GPIO_Pin_7	  */
+#define _2_6_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_GRAY_2_6)/* GPIOB->IDR  & GPIO_Pin_6   */
+#define _2_7_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_GRAYWHITE_2_7)/*GPIOB->IDR  & GPIO_Pin_7	  */
+//#define direction_read      GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_BROWNWHITE_DIRECTION)
+
 #define GPIO_PWM_PIN                GPIO_Pin_2
 #define GPIO_USART_TX_PIN           GPIO_Pin_9
 #define GPIO_USART_RX_PIN           GPIO_Pin_10
@@ -10,7 +31,7 @@
 #define PWM_HIGH_WIDTH              17                              // Duty cycle of pwm signal for a logical 1 to be read by the ws2812 chip. Duty cycle = PWM_HIGH_WIDTH/TIM_PERIOD*100
 #define PWM_LOW_WIDTH               9                               // Duty cycle of pwm signal for a logical 0 to be read by the ws2812 chip. Duty cycle = PWM_LOW_WIDTH/TIM_PERIOD*100
 
-#define COLUMBS                     90
+#define COLUMBS                     120
 #define ROWS                        2
 
 /* Buffer that holds one complete DMA transmission.

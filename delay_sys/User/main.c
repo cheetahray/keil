@@ -40,7 +40,7 @@ void random_Noise(float r, float g, float b);
 void converge_Center(float r, float g, float b);
 void rainbow_Loop(void);
 void test_Matrix(void);
-
+void rotary_Matrix(void);
 // Sloppy delay function (not accurate)
 void Delay(__IO uint32_t nCount) { while(nCount--) { } }
 
@@ -56,7 +56,7 @@ int main() {
     } else {
         
         uint16_t animation_Select;
-        uint16_t i, j = 0;//, adc_Value;
+        uint16_t i;//, j = 0, adc_Value;
         
         // Configure peripherals
         usart_Baud_Rate = 115200;
@@ -65,7 +65,7 @@ int main() {
         // Reset LEDs
         send_data(led_Colors, LED_COUNT);
 
-        animation_Select = 4;
+        animation_Select = 5;
 
         while (1){  
             
@@ -79,6 +79,7 @@ int main() {
                 case(2) : { converge_Center(0.1, 0, 0); break; }
                 case(3) : { rainbow_Loop(); break; }
                 case(4) : { test_Matrix(); break; }
+                case(5) : { rotary_Matrix(); break; }
             }
             /*
             memset(&usartBTBuffer, '\0', sizeof(usartBTBuffer));
@@ -92,7 +93,7 @@ int main() {
                     break; // Exit loop if NULL found
                 }
             }*/
-            for(i = 0; i < 1*10; i++) { Delay(50000L); }
+            //for(i = 0; i < 1*10; i++) { Delay(50000L); }
         } //While(1) l[oop
     } //config_BT If statement                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 }
@@ -217,6 +218,30 @@ void send_data(uint8_t *led_Colors, uint16_t len) {
     DMA_ClearFlag(DMA1_FLAG_TC1);                                       // Clear DMA1 Channel 1 transfer complete flag
 }
 
+void rotaryUart(uint16_t args) {
+    int i;
+    char atCMD[8];
+	memset(&atCMD, '\0', sizeof(atCMD));
+    sprintf(atCMD, "%d ", args); //, direction_read);
+    for(i = 0; i < sizeof(atCMD); i++) {
+        if(atCMD[i] != '\0') {
+            while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET) {}
+            USART_SendData(USART1, atCMD[i]);
+        } else {
+            break;
+        }
+    }
+}
+
+uint16_t calAngle() {
+    uint16_t retAngle;
+    retAngle = _2_0_read + (_2_1_read << 1) + (_2_2_read << 2) + (_2_3_read << 3) + (_2_4_read << 4)
+		                 + (_2_5_read << 5) + (_2_6_read << 6) + (_2_7_read << 7);
+    retAngle = ( ( retAngle * 45 ) >> 5 ) ;
+    rotaryUart(retAngle);
+    return retAngle;
+}
+	
 void test_LED(float r, float g, float b) {
     
     uint8_t i, j, k, brightness = 255;
@@ -337,7 +362,7 @@ void rainbow_Loop(){
 
 void test_Matrix() {
     
-    uint8_t i, j;
+    uint8_t i;//, j;
     
     rgb[0][0] = 0;
     rgb[0][1] = 0;
@@ -355,12 +380,39 @@ void test_Matrix() {
         
         
         send_data(led_Colors, LED_COUNT);   
-    
+        /*
         for(j = 0; j < 0.6*10; j++) {
             Delay(50000L);
         }
-    }
-    
-    
+        */
+        calAngle();
+    }        
     
 }
+
+void rotary_Matrix() {
+    
+    uint8_t i, howmanyled = 5;//, j;
+    uint16_t retAngle = calAngle();
+	uint16_t idx= (COLUMBS-howmanyled)*retAngle/360;
+
+    rgb[0][0] = 0;
+    rgb[0][1] = 0;
+    rgb[0][2] = 0;
+    
+    rgb[1][0] = 255;
+    rgb[1][1] = 255;
+    rgb[1][2] = 255;
+    
+	rotaryUart(idx);
+	for(i = 0; i < LED_COUNT; i++) 
+    {
+        if (i < idx || i >= idx+howmanyled)
+            led_Colors[i] = 0;
+        else
+            led_Colors[i] = 1;
+    }
+    send_data(led_Colors, LED_COUNT);   
+    
+}
+
