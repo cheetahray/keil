@@ -40,12 +40,14 @@ void random_Noise(float r, float g, float b);
 void converge_Center(float r, float g, float b);
 void rainbow_Loop(void);
 void test_Matrix(void);
-void rotary_Matrix(void);
+void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *direction);
 // Sloppy delay function (not accurate)
 void Delay(__IO uint32_t nCount) { while(nCount--) { } }
 
 int main() {
     
+    uint8_t nowho=1, direction=0, restone=255, restwo=255, idx=(COLUMBS>>1);
+    int64_t speed = 0;
     //config_BT = true;
     config_BT = false;
     
@@ -79,7 +81,7 @@ int main() {
                 case(2) : { converge_Center(0.1, 0, 0); break; }
                 case(3) : { rainbow_Loop(); break; }
                 case(4) : { test_Matrix(); break; }
-                case(5) : { rotary_Matrix(); break; }
+                case(5) : { rotary_Matrix(&nowho, &restone, &restwo, &direction); break; }
             }
             /*
             memset(&usartBTBuffer, '\0', sizeof(usartBTBuffer));
@@ -218,11 +220,11 @@ void send_data(uint8_t *led_Colors, uint16_t len) {
     DMA_ClearFlag(DMA1_FLAG_TC1);                                       // Clear DMA1 Channel 1 transfer complete flag
 }
 
-void rotaryUart(uint16_t args) {
+void rotaryUart(char * arg0, uint16_t arg1) {
     int i;
     char atCMD[8];
-	memset(&atCMD, '\0', sizeof(atCMD));
-    sprintf(atCMD, "%d ", args); //, direction_read);
+    memset(&atCMD, '\0', sizeof(atCMD));
+    sprintf(atCMD, "%s %u\t", arg0, arg1); //, direction_read);
     for(i = 0; i < sizeof(atCMD); i++) {
         if(atCMD[i] != '\0') {
             while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET) {}
@@ -238,7 +240,7 @@ uint16_t calAngle() {
     retAngle = _2_0_read + (_2_1_read << 1) + (_2_2_read << 2) + (_2_3_read << 3) + (_2_4_read << 4)
 		                 + (_2_5_read << 5) + (_2_6_read << 6) + (_2_7_read << 7);
     retAngle = ( ( retAngle * 45 ) >> 5 ) ;
-    rotaryUart(retAngle);
+    rotaryUart("1.", retAngle);
     return retAngle;
 }
 	
@@ -390,24 +392,68 @@ void test_Matrix() {
     
 }
 
-void rotary_Matrix() {
+void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *direction) {
     
-    uint8_t i, howmanyled = 5;//, j;
-    uint16_t retAngle = calAngle();
-	uint16_t idx= (COLUMBS-howmanyled)*retAngle/360;
-
+    uint8_t i, howmanyled=5, t=1;//, j;
+    int64_t x;
+    uint16_t retAngle=calAngle();
+    uint16_t idx= (COLUMBS-howmanyled)*retAngle/360;
+        
     rgb[0][0] = 0;
     rgb[0][1] = 0;
     rgb[0][2] = 0;
-    
-    rgb[1][0] = 255;
-    rgb[1][1] = 255;
-    rgb[1][2] = 255;
-    
-	rotaryUart(idx);
-	for(i = 0; i < LED_COUNT; i++) 
+
+    if(1 == *nowho)
     {
-        if (i < idx || i >= idx+howmanyled)
+        rgb[1][0] = 255;
+        rgb[1][1] = (uint8_t)(*restone);
+        rgb[1][2] = (uint8_t)(*restwo);
+    }
+    else if(2 == *nowho)
+    {
+        rgb[1][0] = 255;
+        rgb[1][1] = (uint8_t)(*restone);
+        rgb[1][2] = (uint8_t)(*restwo);
+    }
+    else if(3 == *nowho)
+    {
+        rgb[1][0] = (uint8_t)(*restone);
+        rgb[1][1] = 255;
+        rgb[1][2] = (uint8_t)(*restwo);
+    }
+
+    if(0 == *direction)
+    {
+        (*restwo)--;
+        if(0 == *restwo)
+            *direction = 1;
+    }
+    else
+    {
+        (*restwo)++;
+        if(255 == *restwo)
+        {
+            *direction = 0;
+			(*restone)--;
+            if(0 == *restone)
+            {
+                *restone = 255;
+				(*nowho)++;
+                if(4 == *nowho)
+                    *nowho = 1;
+            }
+        }
+    }    
+	
+	rotaryUart("2.", idx);
+	rotaryUart("3.", *nowho);
+	rotaryUart("4.", *restone);
+	rotaryUart("5.", *restwo);
+	rotaryUart("6.", *direction);
+	
+    for(i = 0; i < LED_COUNT; i++) 
+    {
+        if (i < idx || ( i >= idx+howmanyled && i < ( LED_COUNT-idx-(howmanyled<<1) ) ) || i >= (LED_COUNT-idx-howmanyled) )
             led_Colors[i] = 0;
         else
             led_Colors[i] = 1;
