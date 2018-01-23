@@ -250,7 +250,7 @@
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>1</TopLine>
-      <CurrentLine>1</CurrentLine>
+      <CurrentLine>6</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\User\config.c</PathWithFileName>
       <FilenameWithoutPath>config.c</FilenameWithoutPath>
@@ -705,7 +705,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>144</TopLine>
+      <TopLine>149</TopLine>
       <CurrentLine>151</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Libraries\CMSIS\Core\CM3\startup\arm\startup_stm32f10x_hd.s</PathWithFileName>

@@ -415,88 +415,88 @@ void calspeed(float *x, float *v, float a)
 }
 
 void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *direction, int16_t *idx, float *speed) {
-    
+    uint16_t baseAngle = 270;
     uint8_t i, howmanyled=5;//, j;
-    float x=0.0, divider = 20.0;
+    float x=0.0, divider = 90.0;
     uint16_t retAngle=calAngle();
     //uint16_t idx= (COLUMBS-howmanyled)*retAngle/360;
-    if (retAngle >=175 && retAngle <= 185)
+    if (retAngle >=baseAngle-5 && retAngle <= baseAngle+5)
     {
         (*speed) = 0.0;
     }
-    else if (retAngle >=186 && retAngle <= 191)
+    else if (retAngle >= baseAngle+6 && retAngle <= baseAngle+11)
     {
         calspeed(&x, speed, 1.0 / divider );
     }
-    else if(retAngle >=192 && retAngle <= 197)
+    else if(retAngle >= baseAngle+12 && retAngle <= baseAngle+17)
     {
         calspeed(&x, speed, 2.0 / divider );
     }
-    else if(retAngle >=198 && retAngle <= 203)
+    else if(retAngle >= baseAngle+18 && retAngle <= baseAngle+23)
     {
         calspeed(&x, speed, 3.0 / divider );
     }
-    else if(retAngle >=204 && retAngle <= 209)
+    else if(retAngle >= baseAngle+24 && retAngle <= baseAngle+29)
     {
         calspeed(&x, speed, 4.0 / divider );
     }
-    else if(retAngle >=210 && retAngle <= 216)
+    else if(retAngle >= baseAngle+30 && retAngle <= baseAngle+36)
     {
         calspeed(&x, speed, 5.0 / divider );
     }
-    else if(retAngle >=217 && retAngle <= 224)
+    else if(retAngle >= baseAngle+37 && retAngle <= baseAngle+44)
     {
         calspeed(&x, speed, 6.0 / divider );
     }
-    else if(retAngle >=225 && retAngle <= 233)
+    else if(retAngle >= baseAngle+45 && retAngle <= baseAngle+53)
     {
         calspeed(&x, speed, 7.0 / divider );
     }
-    else if(retAngle >=234 && retAngle <= 255)
+    else if(retAngle >= baseAngle+54 && retAngle <= baseAngle+75)
     {
         calspeed(&x, speed, 8.0 / divider );
     }
-    else if(retAngle >=256 && retAngle <= 269)
+    else if(retAngle >= baseAngle+76 && retAngle <= baseAngle+89)
     {
         calspeed(&x, speed, 9.0 / divider );
     }
-    else if (retAngle <=174 && retAngle >= 169)
+    else if (retAngle <= baseAngle-6 && retAngle >= baseAngle-11)
     {
         calspeed(&x, speed, -1.0 / divider );
     }
-    else if(retAngle <=168 && retAngle >= 163)
+    else if(retAngle <= baseAngle-12 && retAngle >= baseAngle-17)
     {
         calspeed(&x, speed, -2.0 / divider );
     }
-    else if(retAngle <=162 && retAngle >= 157)
+    else if(retAngle <= baseAngle-18 && retAngle >= baseAngle-23)
     {
         calspeed(&x, speed, -3.0 / divider );
     }
-    else if(retAngle <=156 && retAngle >= 151)
+    else if(retAngle <= baseAngle-24 && retAngle >= baseAngle-29)
     {
         calspeed(&x, speed, -4.0 / divider );
     }
-    else if(retAngle <=150 && retAngle >= 144)
+    else if(retAngle <= baseAngle-30 && retAngle >= baseAngle-36)
     {
         calspeed(&x, speed, -5.0 / divider );
     }
-    else if(retAngle <=143 && retAngle >= 136)
+    else if(retAngle <= baseAngle-37 && retAngle >= baseAngle-44)
     {
         calspeed(&x, speed, -6.0 / divider );
     }
-    else if(retAngle <=135 && retAngle >= 127)
+    else if(retAngle <= baseAngle-45 && retAngle >= baseAngle-53)
     {
         calspeed(&x, speed, -7.0 / divider );
     }
-    else if(retAngle <=126 && retAngle >= 105)
+    else if(retAngle <= baseAngle-54 && retAngle >= baseAngle-75)
     {
         calspeed(&x, speed, -8.0 / divider );
     }
-    else if(retAngle <=104 && retAngle >= 91)
+    else if(retAngle <= baseAngle-76 && retAngle >= baseAngle-89)
     {
         calspeed(&x, speed, -9.0 / divider );
     }
-    else if(retAngle >=270 && retAngle <= 359)
+    else if(/*retAngle >= 0 && */retAngle <= 90)
     {
         calspeed(&x, speed, 10.0 / divider );
     }
@@ -532,7 +532,10 @@ void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *d
     {
         (*restwo)--;
         if(0 == *restwo)
+        {
             *direction = 1;
+            (*restone)--;
+        }
     }
     else
     {
@@ -551,36 +554,49 @@ void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *d
         }
     }    
     rotaryUart("1.", retAngle);
-    rotaryUart("2.", *idx);
     /*
+    rotaryUart("2.", *idx);
     rotaryUart("3.", *nowho);
     rotaryUart("4.", *restone);
-    rotaryUart("5.", *restwo);
+    rotaryUart("5.", *restwo)
     rotaryUart("6.", *direction);
     */
-    rotaryfUart("7.", x);
-
+    rotaryfUart("7.", *speed);
+    rotaryfUart("8.", x);
     (*idx)+=(int16_t)x;
     if(*idx < 0)
     {
         *idx = 0;
-        if(x <= -3.0)
-            (*speed) *= -0.815;
-        else if(x <= -2.0)
-            (*speed) *= -0.7;
-        else if(x <= -1.0)
-            (*speed) *= -0.5;
+		if ( (*speed) < -1.15 && (*speed) > -1.75 )
+        {
+            (*speed) *= -0.75;
+        }
+        else
+        {
+            (*speed) *= -0.9;
+        }
     }
     else if (*idx >= COLUMBS-1-howmanyled)
     {
         *idx = COLUMBS-2-howmanyled;
-        if(x >= 3.0)
-            (*speed) *= -0.815;
-        else if(x >= 2.0)
-            (*speed) *= -0.7;
-        else if(x >= 1.0)
-            (*speed) *= -0.5;
+        if ( (*speed) > 1.15 && (*speed) < 1.75 )
+        {
+            (*speed) *= -0.75;
+        }
+        else
+        {
+            (*speed) *= -0.9;
+        }
     }    
+	else if ( 0.0 < (*speed) && (*speed) < (30.0 / divider) )
+    {
+        (*speed) = -1.0;
+	}
+	else if ( 0.0 > (*speed) && (*speed) > (-30.0 / divider) )
+    {
+        (*speed) = 1.0;
+	}
+		
     
     for(i = 0; i < LED_COUNT; i++) 
     {
