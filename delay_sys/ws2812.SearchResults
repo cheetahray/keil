@@ -1,7 +1,4 @@
----- GPIO_BROWNWHITE_DIRECTION Matches (3 in 2 files) ----
-Config.c (user):42:                              | GPIO_BROWNWHITE_DIRECTION;
-Vars.h (user):12:#define GPIO_BROWNWHITE_DIRECTION   GPIO_Pin_8
-Vars.h (user):23:#define direction_read      GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_BROWNWHITE_DIRECTION)
----- GPIO_BROWNWHITE_DIRECTION Search Errors Encountered (1) ----
-The following 1 files could not be processed:
-C:\Users\Mark\Documents\keil\delay_sys\Project\JLinkLog.txt : File could not be opened.
+---- GPIO_Pin_2 Matches (3 in 2 files) ----
+Stm32f10x_gpio.h (libraries\stm32f10x_stdperiph_driver\inc):#define GPIO_Pin_2                 ((uint16_t)0x0004)  /*!< Pin 2 selected */
+Stm32f10x_gpio.h (libraries\stm32f10x_stdperiph_driver\inc):                              ((PIN) == GPIO_Pin_2) || \
+Vars.h (user):#define GPIO_YELLOW_2_2             GPIO_Pin_2

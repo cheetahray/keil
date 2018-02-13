@@ -3,18 +3,18 @@
 
 #define GPIO_BROWN_2_0              GPIO_Pin_0
 #define GPIO_ORANGE_2_1             GPIO_Pin_1
-#define GPIO_YELLOW_2_2             GPIO_Pin_12
+#define GPIO_YELLOW_2_2             GPIO_Pin_2
 #define GPIO_GREEN_2_3              GPIO_Pin_3
 #define GPIO_BLUE_2_4               GPIO_Pin_4
 #define GPIO_BLUEWHITE_2_5          GPIO_Pin_5
 #define GPIO_GRAY_2_6               GPIO_Pin_6
 #define GPIO_GRAYWHITE_2_7          GPIO_Pin_7
 #define GPIO_BROWNWHITE_DIRECTION   GPIO_Pin_8
-#define ROTARY_ENCODER_ANGLE        GPIOB
+#define ROTARY_ENCODER_ANGLE        GPIOA
 
 #define _2_0_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_BROWN_2_0)/* GPIOB->IDR  & GPIO_Pin_6   */
 #define _2_1_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_ORANGE_2_1)/*GPIOB->IDR  & GPIO_Pin_7	  */
-#define _2_2_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_YELLOW_2_2)/* GPIOB->IDR  & GPIO_Pin_6   */
+#define _2_2_read       	GPIO_ReadInputDataBit(GPIOB,                GPIO_YELLOW_2_2)/* GPIOB->IDR  & GPIO_Pin_6   */
 #define _2_3_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_GREEN_2_3)/*GPIOB->IDR  & GPIO_Pin_7	  */
 #define _2_4_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_BLUE_2_4)/* GPIOB->IDR  & GPIO_Pin_6   */
 #define _2_5_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_BLUEWHITE_2_5)/*GPIOB->IDR  & GPIO_Pin_7	  */
