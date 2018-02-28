@@ -567,8 +567,8 @@ void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *d
     rotaryUart("4.", *restone);
     rotaryUart("5.", *restwo)
     rotaryUart("6.", *direction);
-    */
     rotaryfUart("7.", *speed);
+    */
     //rotaryfUart("8.", x);
     (*idx)+=(int16_t)x;
     if(*idx < 0)
@@ -677,7 +677,7 @@ void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *d
         if(*idx <= 3 && *idx >= 1)
         {
             (*idx)--;
-            rotaryUart("9.", *idx);
+            //rotaryUart("9.", *idx);
         }
     }
     else if ( 0.0 > (*speed) && (*speed) > -0.125 )
@@ -716,7 +716,7 @@ void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *d
         if(*idx <= COLUMBS-2-howmanyled && *idx >= COLUMBS-4-howmanyled)
         {
             (*idx)++;
-            rotaryUart("9.", *idx);
+            //rotaryUart("9.", *idx);
         }
     }
 

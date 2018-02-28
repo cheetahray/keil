@@ -37,14 +37,14 @@ void GPIO_Config(void) {
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    GPIO_InitStruct.GPIO_Pin = GPIO_BROWN_2_0 | GPIO_ORANGE_2_1 | GPIO_GREEN_2_3   
+    GPIO_InitStruct.GPIO_Pin = GPIO_BROWN_2_0 | GPIO_ORANGE_2_1   
                               | GPIO_BLUE_2_4  | GPIO_BLUEWHITE_2_5 | GPIO_GRAY_2_6   | GPIO_GRAYWHITE_2_7;
                               //| GPIO_BROWNWHITE_DIRECTION;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPD;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    GPIO_InitStruct.GPIO_Pin = GPIO_YELLOW_2_2;
+    GPIO_InitStruct.GPIO_Pin = GPIO_YELLOW_2_2 | GPIO_GREEN_2_3;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPD;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOB, &GPIO_InitStruct);	
