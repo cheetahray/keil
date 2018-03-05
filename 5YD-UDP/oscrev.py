@@ -38,23 +38,23 @@ bigReal = 2209
   
 cc = OSCClient()
 cc.connect(('192.168.1.200', 6666))   # localhost, port 57120
+dd = OSCClient()
+dd.connect(('127.0.0.1', 910))   # localhost, port 57120
 
-def over(msg,arg0):
-    global cc
+def osc1(myClient,msg,arg0):
     oscmsg = OSCMessage()
-    print "%s %d" % (msg,arg0)
     oscmsg.setAddress(msg)
     oscmsg.append(arg0)
-    cc.send(oscmsg)
+    print oscmsg
+    myClient.send(oscmsg)
 
-def click(msg,arg0,arg1):
-    global cc
+def osc2(myClient,msg,arg0,arg1):
     oscmsg = OSCMessage()
-    print "%s %d %d" % (msg,arg0,arg1)
     oscmsg.setAddress(msg)
     oscmsg.append(arg0)
     oscmsg.append(arg1)
-    cc.send(oscmsg)
+    print oscmsg
+    myClient.send(oscmsg)
     
 server = OSCServer( ("0.0.0.0", 7110) )
 server.timeout = 0
@@ -77,15 +77,16 @@ def hit_callback(path, tags, args, source):
     # tags will contain 'fff'
     # args is a OSCMessage with data
     # source is where the message came from (in case you need to reply)
+    global cc
     print (path, args[0], args[1])
     if XY[args[0]][1][1] == -14:
-        click (path, XY[args[0]][0], bigTop - (bigLen * args[1] / bigReal ))
+        osc2 (cc, path, XY[args[0]][0], bigTop - (bigLen * args[1] / bigReal ))
     elif XY[args[0]][1][1] == -10:
-        click (path, XY[args[0]][0], midTop - (midLen * args[1] / midReal ))            
+        osc2 (cc, path, XY[args[0]][0], midTop - (midLen * args[1] / midReal ))            
     elif XY[args[0]][1][1] == 10:
-        click (path, XY[args[0]][0], smallTop - (smallLen * args[1] / smallReal ))
+        osc2 (cc, path, XY[args[0]][0], smallTop - (smallLen * args[1] / smallReal ))
     else: #XY[args[1]][1][1] == 64
-        click (path, XY[args[0]][0], tinyTop - (tinyLen * args[1] / tinyReal ))
+        osc2 (cc, path, XY[args[0]][0], tinyTop - (tinyLen * args[1] / tinyReal ))
 
 def get_callback(path, tags, args, source):
     # which user will be determined by path:
@@ -94,25 +95,43 @@ def get_callback(path, tags, args, source):
     # tags will contain 'fff'
     # args is a OSCMessage with data
     # source is where the message came from (in case you need to reply)
+    #/BallIn
+    global cc
     print (path, args[0], args[1])
-    click (path, args[0], ( (220 * args[1]) >> 7 ) - 100)  #220 * Y / 128 - 100  
+    osc2 (cc, path, args[0], ( (220 * args[1]) >> 7 ) - 100)  #220 * Y / 128 - 100  
     
-def game_callback(path, tags, args, source):
+def gamemode_callback(path, tags, args, source):
+    # don't do this at home (or it'll quit blender)
+    #global run
+    #run = False
+    #/basketNumColor
+    #https://gist.github.com/ndavison/6a5d97cb8a9091cffa7a
+    #http://www.runoob.com/python/python-xml.html
+    #https://my.oschina.net/sukai/blog/611451
+    #https://pythonprogramming.net/urllib-tutorial-python-3/
+    #/GameMode
+    #Timer for 300 secs
+    print (path, args[0])
+
+def gameshow_callback(path, tags, args, source):
     # don't do this at home (or it'll quit blender)
     #global run
     #run = False
     print (path, args[0])
 
-def show_callback(path, tags, args, source):
+def showmode_callback(path, tags, args, source):
     # don't do this at home (or it'll quit blender)
     #global run
     #run = False
+    #/ShowMode
     print (path, args[0])
 
 def standby_callback(path, tags, args, source):
     # don't do this at home (or it'll quit blender)
     #global run
     #run = False
+    #Send OSC to Max telling the basket wave dance
+    #/StandbyMode
     print (path, args[0])
 
 def winner_callback(path, tags, args, source):
@@ -123,8 +142,9 @@ def winner_callback(path, tags, args, source):
 
 server.addMsgHandler( "/Hit", hit_callback )
 server.addMsgHandler( "/Get", get_callback )
-server.addMsgHandler( "/GameMode", game_callback )
-server.addMsgHandler( "/ShowMode", show_callback )
+server.addMsgHandler( "/GameMode", gamemode_callback )
+server.addMsgHandler( "/GameShow", gameshow_callback )
+server.addMsgHandler( "/ShowMode", showmode_callback )
 server.addMsgHandler( "/StandbyMode", standby_callback )
 server.addMsgHandler( "/GameWinner", winner_callback )
 
@@ -145,11 +165,11 @@ while run:
     each_frame()
 
 for next in range(25, len(XY)):
-    click ("/Hit", XY[next][0], 180)
+    osc2 (cc, "/Hit", XY[next][0], 180)
     time.sleep(2)
-    click ("/Hit", XY[next][0], 180)
+    osc2 (cc, "/Hit", XY[next][0], 180)
     time.sleep(2)
-    click ("/Hit", XY[next][0], 180)
+    osc2 (cc, "/Hit", XY[next][0], 180)
     time.sleep(4)
 
 server.close()
