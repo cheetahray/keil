@@ -41,20 +41,22 @@ cc.connect(('192.168.1.200', 6666))   # localhost, port 57120
 dd = OSCClient()
 dd.connect(('127.0.0.1', 910))   # localhost, port 57120
 
-def osc1(myClient,msg,arg0):
+def over(msg,arg0):
+    global cc
     oscmsg = OSCMessage()
     oscmsg.setAddress(msg)
     oscmsg.append(arg0)
     print oscmsg
-    myClient.send(oscmsg)
+    cc.send(oscmsg)
 
-def osc2(myClient,msg,arg0,arg1):
+def click(msg,arg0,arg1):
+    global cc
     oscmsg = OSCMessage()
     oscmsg.setAddress(msg)
     oscmsg.append(arg0)
     oscmsg.append(arg1)
     print oscmsg
-    myClient.send(oscmsg)
+    cc.send(oscmsg)
     
 server = OSCServer( ("0.0.0.0", 7110) )
 server.timeout = 0
@@ -77,16 +79,15 @@ def hit_callback(path, tags, args, source):
     # tags will contain 'fff'
     # args is a OSCMessage with data
     # source is where the message came from (in case you need to reply)
-    global cc
     print (path, args[0], args[1])
     if XY[args[0]][1][1] == -14:
-        osc2 (cc, path, XY[args[0]][0], bigTop - (bigLen * args[1] / bigReal ))
+        click (path, XY[args[0]][0], bigTop - (bigLen * args[1] / bigReal ))
     elif XY[args[0]][1][1] == -10:
-        osc2 (cc, path, XY[args[0]][0], midTop - (midLen * args[1] / midReal ))            
+        click (path, XY[args[0]][0], midTop - (midLen * args[1] / midReal ))            
     elif XY[args[0]][1][1] == 10:
-        osc2 (cc, path, XY[args[0]][0], smallTop - (smallLen * args[1] / smallReal ))
+        click (path, XY[args[0]][0], smallTop - (smallLen * args[1] / smallReal ))
     else: #XY[args[1]][1][1] == 64
-        osc2 (cc, path, XY[args[0]][0], tinyTop - (tinyLen * args[1] / tinyReal ))
+        click (path, XY[args[0]][0], tinyTop - (tinyLen * args[1] / tinyReal ))
 
 def get_callback(path, tags, args, source):
     # which user will be determined by path:
@@ -96,9 +97,8 @@ def get_callback(path, tags, args, source):
     # args is a OSCMessage with data
     # source is where the message came from (in case you need to reply)
     #/BallIn
-    global cc
     print (path, args[0], args[1])
-    osc2 (cc, path, args[0], ( (220 * args[1]) >> 7 ) - 100)  #220 * Y / 128 - 100  
+    click (path, args[0], ( (220 * args[1]) >> 7 ) - 100)  #220 * Y / 128 - 100  
     
 def gamemode_callback(path, tags, args, source):
     # don't do this at home (or it'll quit blender)
@@ -165,11 +165,11 @@ while run:
     each_frame()
 
 for next in range(25, len(XY)):
-    osc2 (cc, "/Hit", XY[next][0], 180)
+    click ("/Hit", XY[next][0], 180)
     time.sleep(2)
-    osc2 (cc, "/Hit", XY[next][0], 180)
+    click ("/Hit", XY[next][0], 180)
     time.sleep(2)
-    osc2 (cc, "/Hit", XY[next][0], 180)
+    click ("/Hit", XY[next][0], 180)
     time.sleep(4)
 
 server.close()
