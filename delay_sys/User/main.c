@@ -40,13 +40,13 @@ void random_Noise(float r, float g, float b);
 void converge_Center(float r, float g, float b);
 void rainbow_Loop(void);
 void test_Matrix(void);
-void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *direction, int16_t *idx, float *speed);
+void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *direction, int16_t *idx, float *speed, uint8_t *lastleft, uint8_t *lastright);
 // Sloppy delay function (not accurate)
 void Delay(__IO uint32_t nCount) { while(nCount--) { } }
 
 int main() {
 
-    uint8_t nowho=1, direction=0, restone=255, restwo=255;
+    uint8_t nowho=1, direction=0, restone=255, restwo=255, lastleft=0, lastright=0;
     int16_t idx=(COLUMBS>>1);
     float speed = 0.0;
     //config_BT = true;
@@ -59,7 +59,7 @@ int main() {
     } else {
 
         uint16_t animation_Select;
-        uint16_t i;//, j = 0, adc_Value;
+        //uint16_t i, j = 0, adc_Value;
 
         // Configure peripherals
         usart_Baud_Rate = 115200;
@@ -82,7 +82,7 @@ int main() {
             case(2) : { converge_Center(0.1, 0, 0); break; }
             case(3) : { rainbow_Loop(); break; }
             case(4) : { test_Matrix(); break; }
-            case(5) : { rotary_Matrix(&nowho, &restone, &restwo, &direction, &idx, &speed); break; }
+            case(5) : { rotary_Matrix(&nowho, &restone, &restwo, &direction, &idx, &speed, &lastleft, &lastright); break; }
             }
             /*
             memset(&usartBTBuffer, '\0', sizeof(usartBTBuffer));
@@ -251,8 +251,8 @@ void rotaryfUart(char * arg0, float arg1) {
     }
 }
 
-uint16_t calAngle() {
-    uint16_t retAngle;
+int16_t calAngle() {
+    int16_t retAngle;
     retAngle = _2_0_read + (_2_1_read << 1) + (_2_2_read << 2) + (_2_3_read << 3) + (_2_4_read << 4)
                + (_2_5_read << 5) + (_2_6_read << 6) + (_2_7_read << 7);
     retAngle = ( ( retAngle * 45 ) >> 5 ) ;
@@ -414,11 +414,11 @@ void calspeed(float *x, float *v, float a)
     (*v) = (*v) + a /** t*/;
 }
 
-void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *direction, int16_t *idx, float *speed) {
-    uint16_t baseAngle = 270;
-    uint8_t i, howmanyled=5;//, j;
+void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *direction, int16_t *idx, float *speed, uint8_t *lastleft, uint8_t *lastright) {
+    int16_t baseAngle = 270;
+    uint8_t i, howmanyled=5, leftbool=0, rightbool=0;//, j;
     float x=0.0, divider = 110.0;
-    uint16_t retAngle=calAngle();
+    int16_t retAngle=calAngle();
     //uint16_t idx= (COLUMBS-howmanyled)*retAngle/360;
     int16_t whichone;
     if (retAngle >= baseAngle-5 && retAngle <= baseAngle)
@@ -561,6 +561,18 @@ void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *d
         }
     }
     rotaryUart("1.", retAngle);
+    leftbool = ( (baseAngle-retAngle) > 30 );
+    rightbool = ( (retAngle-baseAngle) > 30 ); 
+    if(leftbool != (*lastleft) )
+    {
+        LEFT_ONOFF(leftbool);
+        (*lastleft) = leftbool;
+    }	
+    if (rightbool != (*lastright) )
+    {
+        RIGHT_ONOFF(rightbool);
+        (*lastright) = rightbool;
+    }
     /*
     rotaryUart("2.", *idx);
     rotaryUart("3.", *nowho);
@@ -723,7 +735,7 @@ void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *d
 
     for(i = 0; i < LED_COUNT; i++)
     {
-        if (i < (*idx) || ( i >= (*idx)+howmanyled && i < ( LED_COUNT-(*idx)-(howmanyled<<1) ) ) || i >= (LED_COUNT-(*idx)-howmanyled) )
+        if (i < (*idx) || ( i >= (*idx)+howmanyled ) ) //&& i < ( LED_COUNT-(*idx)-(howmanyled<<1) ) ) || i >= (LED_COUNT-(*idx)-howmanyled) )
             led_Colors[i] = 0;
         else
             led_Colors[i] = 1;

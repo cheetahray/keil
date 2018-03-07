@@ -10,17 +10,21 @@
 #define GPIO_GRAY_2_6               GPIO_Pin_6
 #define GPIO_GRAYWHITE_2_7          GPIO_Pin_7
 #define GPIO_BROWNWHITE_DIRECTION   GPIO_Pin_8
-#define ROTARY_ENCODER_ANGLE        GPIOA
+//#define ROTARY_ENCODER_ANGLE       GPIOA
+#define GPIO_LEFT                   GPIO_Pin_10
+#define GPIO_RIGHT                  GPIO_Pin_11
 
-#define _2_0_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_BROWN_2_0)/* GPIOB->IDR  & GPIO_Pin_6   */
-#define _2_1_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_ORANGE_2_1)/*GPIOB->IDR  & GPIO_Pin_7	  */
-#define _2_2_read       	GPIO_ReadInputDataBit(GPIOB,                GPIO_YELLOW_2_2)/* GPIOB->IDR  & GPIO_Pin_6   */
-#define _2_3_read       	GPIO_ReadInputDataBit(GPIOB,                  GPIO_GREEN_2_3)/*GPIOB->IDR  & GPIO_Pin_7	  */
-#define _2_4_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_BLUE_2_4)/* GPIOB->IDR  & GPIO_Pin_6   */
-#define _2_5_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_BLUEWHITE_2_5)/*GPIOB->IDR  & GPIO_Pin_7	  */
-#define _2_6_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_GRAY_2_6)/* GPIOB->IDR  & GPIO_Pin_6   */
-#define _2_7_read       	GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_GRAYWHITE_2_7)/*GPIOB->IDR  & GPIO_Pin_7	  */
-//#define direction_read      GPIO_ReadInputDataBit(ROTARY_ENCODER_ANGLE, GPIO_BROWNWHITE_DIRECTION)
+#define _2_0_read       	GPIO_ReadInputDataBit(GPIOA, GPIO_BROWN_2_0)/* GPIOB->IDR  & GPIO_Pin_6   */
+#define _2_1_read       	GPIO_ReadInputDataBit(GPIOA, GPIO_ORANGE_2_1)/*GPIOB->IDR  & GPIO_Pin_7	  */
+#define _2_2_read       	GPIO_ReadInputDataBit(GPIOB, GPIO_YELLOW_2_2)/* GPIOB->IDR  & GPIO_Pin_6   */
+#define _2_3_read       	GPIO_ReadInputDataBit(GPIOB, GPIO_GREEN_2_3)/*GPIOB->IDR  & GPIO_Pin_7	  */
+#define _2_4_read       	GPIO_ReadInputDataBit(GPIOA, GPIO_BLUE_2_4)/* GPIOB->IDR  & GPIO_Pin_6   */
+#define _2_5_read       	GPIO_ReadInputDataBit(GPIOA, GPIO_BLUEWHITE_2_5)/*GPIOB->IDR  & GPIO_Pin_7	  */
+#define _2_6_read       	GPIO_ReadInputDataBit(GPIOA, GPIO_GRAY_2_6)/* GPIOB->IDR  & GPIO_Pin_6   */
+#define _2_7_read       	GPIO_ReadInputDataBit(GPIOA, GPIO_GRAYWHITE_2_7)/*GPIOB->IDR  & GPIO_Pin_7	  */
+//#define direction_read         GPIO_ReadInputDataBit(GPIOA, GPIO_BROWNWHITE_DIRECTION)
+#define LEFT_ONOFF(x)      		(0==x?GPIO_WriteBit(GPIOB, GPIO_LEFT, Bit_RESET):GPIO_WriteBit(GPIOB, GPIO_LEFT, Bit_SET));
+#define RIGHT_ONOFF(x)      		(0==x?GPIO_WriteBit(GPIOB, GPIO_RIGHT, Bit_RESET):GPIO_WriteBit(GPIOB, GPIO_RIGHT, Bit_SET));
 
 #define GPIO_PWM_PIN                GPIO_Pin_2
 #define GPIO_USART_TX_PIN           GPIO_Pin_9
@@ -31,8 +35,8 @@
 #define PWM_HIGH_WIDTH              17                              // Duty cycle of pwm signal for a logical 1 to be read by the ws2812 chip. Duty cycle = PWM_HIGH_WIDTH/TIM_PERIOD*100
 #define PWM_LOW_WIDTH               9                               // Duty cycle of pwm signal for a logical 0 to be read by the ws2812 chip. Duty cycle = PWM_LOW_WIDTH/TIM_PERIOD*100
 
-#define COLUMBS                     90
-#define ROWS                        2
+#define COLUMBS                     180
+#define ROWS                        1
 
 /* Buffer that holds one complete DMA transmission.
  *
