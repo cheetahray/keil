@@ -39,13 +39,15 @@ bigReal = 2209
 cc = OSCClient()
 cc.connect(('192.168.1.200', 6666))   # localhost, port 57120
 dd = OSCClient()
-dd.connect(('127.0.0.1', 910))   # localhost, port 57120
+dd.connect(('192.168.1.200', 6662))   # localhost, port 57120
 
-def over(msg,arg0):
-    global cc
+def over(msg,arg0,arg1,arg2):
+    global dd
     oscmsg = OSCMessage()
     oscmsg.setAddress(msg)
     oscmsg.append(arg0)
+    oscmsg.append(arg1)
+    oscmsg.append(arg2)
     print oscmsg
     cc.send(oscmsg)
 
@@ -100,7 +102,7 @@ def get_callback(path, tags, args, source):
     print (path, args[0], args[1])
     click (path, args[0], ( (220 * args[1]) >> 7 ) - 100)  #220 * Y / 128 - 100  
     
-def gamemode_callback(path, tags, args, source):
+def ID_callback(path, tags, args, source):
     # don't do this at home (or it'll quit blender)
     #global run
     #run = False
@@ -109,44 +111,19 @@ def gamemode_callback(path, tags, args, source):
     #http://www.runoob.com/python/python-xml.html
     #https://my.oschina.net/sukai/blog/611451
     #https://pythonprogramming.net/urllib-tutorial-python-3/
-    #/GameMode
-    #Timer for 300 secs
     print (path, args[0])
+    over ("/IDdata", args[0], 11, 2)    	
 
-def gameshow_callback(path, tags, args, source):
+def IDscore_callback(path, tags, args, source):
     # don't do this at home (or it'll quit blender)
     #global run
     #run = False
-    print (path, args[0])
-
-def showmode_callback(path, tags, args, source):
-    # don't do this at home (or it'll quit blender)
-    #global run
-    #run = False
-    #/ShowMode
-    print (path, args[0])
-
-def standby_callback(path, tags, args, source):
-    # don't do this at home (or it'll quit blender)
-    #global run
-    #run = False
-    #Send OSC to Max telling the basket wave dance
-    #/StandbyMode
-    print (path, args[0])
-
-def winner_callback(path, tags, args, source):
-    # don't do this at home (or it'll quit blender)
-    #global run
-    #run = False
-    print (path, args[0])
+    print (path, args[0], arg[1])
 
 server.addMsgHandler( "/Hit", hit_callback )
 server.addMsgHandler( "/Get", get_callback )
-server.addMsgHandler( "/GameMode", gamemode_callback )
-server.addMsgHandler( "/GameShow", gameshow_callback )
-server.addMsgHandler( "/ShowMode", showmode_callback )
-server.addMsgHandler( "/StandbyMode", standby_callback )
-server.addMsgHandler( "/GameWinner", winner_callback )
+server.addMsgHandler( "/ID", ID_callback )
+server.addMsgHandler( "/IDscore", IDscore_callback )
 
 # user script that's called by the game engine every frame
 def each_frame():
@@ -156,7 +133,6 @@ def each_frame():
     while not server.timed_out:
         server.handle_request()
 
-#over("/GameShow", 0)
 # simulate a "game engine"
 while run:
     # do the game stuff:
