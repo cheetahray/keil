@@ -49,7 +49,7 @@ def over(msg,arg0,arg1,arg2):
     oscmsg.append(arg1)
     oscmsg.append(arg2)
     print oscmsg
-    cc.send(oscmsg)
+    dd.send(oscmsg)
 
 def click(msg,arg0,arg1):
     global cc
@@ -100,7 +100,7 @@ def get_callback(path, tags, args, source):
     # source is where the message came from (in case you need to reply)
     #/BallIn
     print (path, args[0], args[1])
-    click (path, args[0], ( (220 * args[1]) >> 7 ) - 100)  #220 * Y / 128 - 100  
+    click (path, args[0], ( ( 220 * int(args[1]) )  >> 7 ) - 100)  #220 * Y / 128 - 100  
     
 def ID_callback(path, tags, args, source):
     # don't do this at home (or it'll quit blender)
