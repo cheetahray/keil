@@ -40,6 +40,19 @@ cc = OSCClient()
 cc.connect(('192.168.1.200', 6666))   # localhost, port 57120
 dd = OSCClient()
 dd.connect(('192.168.1.200', 6662))   # localhost, port 57120
+ee = OSCClient()
+ee.connect(('127.0.0.1', 7730))   # localhost, port 57120
+
+def basket(msg,arg0,arg1,arg2,arg3):
+    global ee
+    oscmsg = OSCMessage()
+    oscmsg.setAddress(msg)
+    oscmsg.append(arg0)
+    oscmsg.append(arg1)
+    oscmsg.append(arg2)
+    oscmsg.append(arg3)
+    print oscmsg
+    ee.send(oscmsg)
 
 def over(msg,arg0,arg1,arg2):
     global dd
@@ -120,10 +133,21 @@ def IDscore_callback(path, tags, args, source):
     #run = False
     print (path, args[0], arg[1])
 
+def user_callback(path, tags, args, source):
+    # which user will be determined by path:
+    # we just throw away all slashes and join together what's left
+    # user = ''.join(path.split("/"))
+    # tags will contain 'fff'
+    # args is a OSCMessage with data
+    # source is where the message came from (in case you need to reply)
+    print (args[0], args[1], args[2], args[3]) 
+    basket (path, args[0], args[1], args[2], args[3])
+	
 server.addMsgHandler( "/Hit", hit_callback )
 server.addMsgHandler( "/Get", get_callback )
 server.addMsgHandler( "/ID", ID_callback )
 server.addMsgHandler( "/IDscore", IDscore_callback )
+server.addMsgHandler( "/motor", user_callback )
 
 # user script that's called by the game engine every frame
 def each_frame():
