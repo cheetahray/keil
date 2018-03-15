@@ -278,7 +278,7 @@ void getSHAR(uint8 * addr);
 void getSIPR(uint8 * addr);
 
 void setSn_IR(uint8 s, uint8 val);
-void Reset_W5500(void);
+//void Reset_W5500(void);
 extern uint8 txsize[];
 extern uint8 rxsize[];
 

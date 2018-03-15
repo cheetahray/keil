@@ -9,7 +9,7 @@
  * 调试方式：J-Link-OB
 **********************************************************************************/
 #include "w5500_conf.h"
-#include "i2c.h"
+//#include "i2c.h"
 #include "SPIx.h"
 #include "timer.h"
 #include "w5500.h"
@@ -33,10 +33,10 @@ uint8 dns_server[4]={114,114,114,114};									/*定义W5500默认DNS*/
 
 uint8	ip_from;
 
-uint16 local_port=6454;	                       					/*定义本地端口*/
+uint16 local_port=5000;	                       					/*定义本地端口*/
 
 /*定义远端IP信息*/
-uint8  remote_ip[4]={192,168,1,167};										/*远端IP地址*/
+uint8  remote_ip[4]={0, 0, 0, 0};										/*远端IP地址*/
 uint16 remote_port=6454;																/*远端端口号*/
 
 uint8 	dhcp_ok=0;																			/*dhcp成功获取IP*/
@@ -61,17 +61,17 @@ void set_w5500_ip(uint8_t ip_select)
 	if(ip_select==IP_FROM_DEFINE)	
 		printf(" 使用定义的IP信息配置W5500\r\n");
 	
-	/*使用EEPROM存储的IP参数*/	
+	/*使用EEPROM存储的IP参数*//*	
 	if(ip_select==IP_FROM_EEPROM)
 	{
-		/*从EEPROM中读取IP配置信息*/
+		/*从EEPROM中读取IP配置信息*//*
 		read_config_from_eeprom();		
 		
-		/*如果读取EEPROM中MAC信息,如果已配置，则可使用*/		
+		/*如果读取EEPROM中MAC信息,如果已配置，则可使用*/		/*
 		if( *(EEPROM_MSG.mac)==0x00&& *(EEPROM_MSG.mac+1)==0x08&&*(EEPROM_MSG.mac+2)==0xdc)		
 		{
 			printf(" IP from EEPROM\r\n");
-			/*复制EEPROM配置信息到配置的结构体变量*/
+			/*复制EEPROM配置信息到配置的结构体变量*//*
 			memcpy(ConfigMsg.lip,EEPROM_MSG.lip, 4);				
 			memcpy(ConfigMsg.sub,EEPROM_MSG.sub, 4);
 			memcpy(ConfigMsg.gw, EEPROM_MSG.gw, 4);
@@ -79,14 +79,14 @@ void set_w5500_ip(uint8_t ip_select)
 		else
 		{
 			printf(" EEPROM未配置,使用定义的IP信息配置W5500,并写入EEPROM\r\n");
-			write_config_to_eeprom();	/*使用默认的IP信息，并初始化EEPROM中数据*/
+			write_config_to_eeprom();	/*使用默认的IP信息，并初始化EEPROM中数据*//*
 		}			
 	}
 
-	/*使用DHCP获取IP参数，需调用DHCP子函数*/		
+	/*使用DHCP获取IP参数，需调用DHCP子函数*/		/*
 	if(ip_select==IP_FROM_DHCP)								
 	{
-		/*复制DHCP获取的配置信息到配置结构体*/
+		/*复制DHCP获取的配置信息到配置结构体*//*
 		if(dhcp_ok==1)
 		{
 			printf(" IP from DHCP\r\n");		 
@@ -127,7 +127,7 @@ void set_w5500_mac(void)
 {
 	memcpy(ConfigMsg.mac, mac, 6);
 	setSHAR(ConfigMsg.mac);	/**/
-	memcpy(DHCP_GET.mac, mac, 6);
+	//memcpy(DHCP_GET.mac, mac, 6);
 }
 
 /**
@@ -213,7 +213,7 @@ void iinchip_cson(void)
 *@brief		W5500复位设置函数
 *@param		无
 *@return	无
-*/
+*//*
 void reset_w5500(void)
 {
     GPIO_ResetBits(GPIOB,WIZ_RESET);
@@ -319,7 +319,7 @@ uint16 wiz_read_buf(uint32 addrbsb, uint8* buf,uint16 len)
 *@brief		写配置信息到EEPROM
 *@param		无
 *@return	无
-*/
+*//*
 void write_config_to_eeprom(void)
 {
 	uint16 dAddr=0;
@@ -331,7 +331,7 @@ void write_config_to_eeprom(void)
 *@brief		从EEPROM读配置信息
 *@param		无
 *@return	无
-*/
+*//*
 void read_config_from_eeprom(void)
 {
 	I2C_ReadBytes(EEPROM_MSG.mac,EEPROM_MSG_LEN,0,ADDR_24C08);
@@ -347,7 +347,7 @@ void  WizW5500_Init(uint8_t ipflag)
 	uint8_t ipfrom;
 	ipfrom=ipflag;
 	gpio_for_w5500_config();						/*初始化MCU相关引脚*/
-	reset_w5500();											/*硬复位W5500*/
+	//reset_w5500();											/*硬复位W5500*/
 	set_w5500_mac();										/*配置MAC地址*/
 	if (ipfrom==IP_FROM_DEFINE||ipfrom==IP_FROM_EEPROM)
 	{
@@ -362,18 +362,18 @@ void  WizW5500_Init(uint8_t ipflag)
 *@brief		STM32定时器2初始化
 *@param		无
 *@return	无
-*/
+*//*
 void timer2_init(void)
 {
-	TIM2_Config();																		/* TIM2 定时配置 */
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 , ENABLE);		/* TIM2 重新开时钟，开始计时 */
+	TIM2_Config();																		/* TIM2 定时配置 *//*
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 , ENABLE);		/* TIM2 重新开时钟，开始计时 *//*
 }
 
 /**
 *@brief		dhcp用到的定时器初始化
 *@param		无
 *@return	无
-*/
+*//*
 void dhcp_timer_init(void)
 {
 			timer2_init();																	
@@ -383,16 +383,16 @@ void dhcp_timer_init(void)
 *@brief		定时器2中断函数
 *@param		无
 *@return	无
-*/
+*//*
 void timer2_isr(void)
 {
 	ms++;	
   if(ms>=1000)
   {  
     ms=0;
-    dhcp_time++;																					/*DHCP定时加1S*/
+    dhcp_time++;																					/*DHCP定时加1S*//*
   }
 
-}
+}*/
 
 

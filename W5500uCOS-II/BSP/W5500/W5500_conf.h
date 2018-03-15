@@ -91,7 +91,7 @@ uint16 wiz_write_buf(uint32 addrbsb,uint8* buf,uint16 len);	/*向W5500写入len字节
 uint16 wiz_read_buf(uint32 addrbsb, uint8* buf,uint16 len);	/*从W5500读出len字节数据*/
 
 /*W5500基本配置相关函数*/
-void reset_w5500(void);																			/*硬复位W5500*/
+//void reset_w5500(void);																			/*硬复位W5500*/
 void set_w5500_mac(void);																		/*配置W5500的MAC地址*/
 void set_w5500_ip(uint8_t ip_select);																			/*配置W5500的IP地址*/
 

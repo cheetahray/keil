@@ -1,6 +1,10 @@
 #define GLOBALS
 #include "includes.h"
 #include "ucos_ii.h"
+#include "w5500.h"
+#include "W5500_conf.h"
+#include "udp_demo.h"
+#include "socket.h"
 
 void LED_GPIO_Init(void)
 {
@@ -13,12 +17,15 @@ void LED_GPIO_Init(void)
 }
 void Task_LED0(void *p_arg)
 {
+    //OSTimeDly(150);
+    WizW5500_Init(IP_FROM_DEFINE);
     while(1)
-    {
+    {   /*
         GPIO_SetBits(GPIOB, GPIO_Pin_0);    //on
         OSTimeDly(50);                    //half second
         GPIO_ResetBits(GPIOB, GPIO_Pin_0);    //off
-        OSTimeDly(50);
+        OSTimeDly(50);*/
+        loopback_udp(SOCK_UDPS, local_port);/*UDP 数据回环测试*/
     }
 }
 void Task_LED1(void *p_arg)
