@@ -47,6 +47,12 @@
 
 #include  <app_cfg.h>
 #include  "usart.h"
+#include  "W5500_conf.h"
+#include  "udp_demo.h"
+#include  "socket.h"
+#include  "key.h"
+#include  "exti.h"
+#include  "pwm.h"
 /*
 #include  <lcd.h>
 #include  <bsp.h>
@@ -72,7 +78,7 @@
 
 EXT OS_EVENT* Com1_MBOX;  
 
-
+/*
 EXT unsigned char TxBuffer1[400]; 
  
 EXT unsigned char RxBuffer1[400];
@@ -82,5 +88,5 @@ EXT volatile unsigned int RxCounter1;
 EXT volatile unsigned int RxCounter2;
 
 EXT volatile unsigned char rec_f,tx_flag;
-
+*/
 #endif

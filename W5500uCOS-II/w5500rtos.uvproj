@@ -561,6 +561,11 @@
               <FileType>1</FileType>
               <FilePath>.\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f10x_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -590,6 +595,36 @@
               <FileName>usart.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\BSP\Base\usart.h</FilePath>
+            </File>
+            <File>
+              <FileName>udp_demo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\Internet\udp_demo.c</FilePath>
+            </File>
+            <File>
+              <FileName>socket.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\W5500\socket.c</FilePath>
+            </File>
+            <File>
+              <FileName>utility.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\W5500\utility.c</FilePath>
+            </File>
+            <File>
+              <FileName>w5500.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\W5500\w5500.c</FilePath>
+            </File>
+            <File>
+              <FileName>w5500_conf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\W5500\w5500_conf.c</FilePath>
+            </File>
+            <File>
+              <FileName>SPIx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\Base\SPIx.c</FilePath>
             </File>
           </Files>
         </Group>

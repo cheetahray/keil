@@ -10,7 +10,7 @@
 **********************************************************************************/
 //头文件  
 #include "exti.h"
-//#include "led.h"
+#include "includes.h"
 
 //函数声明
 //void Delay(u32 n);
@@ -77,6 +77,7 @@ void Nvic_Config_Key()
   */
 void EXTI9_5_IRQHandler(void)
 {  
+  
 /*检查指定的EXTI线路出发请求发生与否*//*
   if (EXTI_GetITStatus(KEY1_BUTTON_EXTI_LINE) != RESET)
   { 
@@ -97,6 +98,7 @@ void EXTI9_5_IRQHandler(void)
   if (EXTI_GetITStatus(KEY3_BUTTON_EXTI_LINE) != RESET)
   { 
     /*清除EXTI线路挂起位*/
+		OSMboxPost(Com1_MBOX,"Fa");
     EXTI_ClearITPendingBit(KEY3_BUTTON_EXTI_LINE); 
   /*D3状态翻转*/
    //LEDXToggle(LED3);

@@ -12,7 +12,7 @@
 #include "w5500.h"
 #include "w5500_conf.h"
 #include "utility.h"
-#include "SYSTICK.h"
+//#include "SYSTICK.h"
 
 /**
 *@brief	 	字符转转化为8位整型函数

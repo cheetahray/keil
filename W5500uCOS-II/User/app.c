@@ -1,10 +1,6 @@
 #define GLOBALS
 #include "includes.h"
 #include "ucos_ii.h"
-#include "w5500.h"
-#include "W5500_conf.h"
-#include "udp_demo.h"
-#include "socket.h"
 
 void LED_GPIO_Init(void)
 {
@@ -14,24 +10,32 @@ void LED_GPIO_Init(void)
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOB, &GPIO_InitStruct);
+    
+    KEY_GPIO_Config();//按键引脚配置
 }
 void Task_LED0(void *p_arg)
 {
-    //OSTimeDly(150);
+    OSTimeDly(150);
     WizW5500_Init(IP_FROM_DEFINE);
     while(1)
-    {   /*
-        GPIO_SetBits(GPIOB, GPIO_Pin_0);    //on
-        OSTimeDly(50);                    //half second
-        GPIO_ResetBits(GPIOB, GPIO_Pin_0);    //off
-        OSTimeDly(50);*/
-        loopback_udp(SOCK_UDPS, local_port);/*UDP 数据回环测试*/
+    {   
+        OSTimeDly(1);
+        loopback_udp(SOCK_UDPS, remote_port);/*UDP 数据回环测试*/
     }
 }
 void Task_LED1(void *p_arg)
 {
+    INT8U err;
+    unsigned char * msg;
     while(1)
     {
+        msg = (unsigned char *) OSMboxPend(Com1_MBOX, 1, &err);
+        /*
+        GPIO_SetBits(GPIOB, GPIO_Pin_0);    //on
+        OSTimeDly(50);                    //half second
+        GPIO_ResetBits(GPIOB, GPIO_Pin_0);    //off
+        OSTimeDly(50);
+			  */
         GPIO_SetBits(GPIOB, GPIO_Pin_1);    //on
         OSTimeDly(100);    //one second
         GPIO_ResetBits(GPIOB, GPIO_Pin_1);    //off
@@ -81,13 +85,17 @@ void Task_Com1(void *p_arg) {
 void NVIC_Config(void)
 {
     NVIC_InitTypeDef NVIC_InitStructure;
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//采用组2
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);//采用组2
 
     NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel5_IRQn;//DMA1通道5中断
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; //先占式优先级设为0
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;//副优先级设为0
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	//中断向量使能
     NVIC_Init(&NVIC_InitStructure);	//初始化结构体
+	
+    Exti_Config();//初始化中断配置	
+    Nvic_Config_Key();//初始化中断向量
+  
 }
 
 OS_STK LED0TaskStk[LED0STKSIZE];
@@ -95,12 +103,13 @@ OS_STK LED1TaskStk[LED1STKSIZE];
 OS_STK Task_Com1Stk[Task_Com1_STK_SIZE];
 int main()
 {
+    OSInit();                    //initialize the os
     RCC_DeInit();
+    NVIC_Config();//中断等级配置
     LED_GPIO_Init();    //initialize the gpio
     USART1_Config();
-    OSInit();                    //initialize the os
-    NVIC_Config();//中断等级配置
     USART_DMAToBuf1();//串口DMA配置
+    TIM2_PWM_Init();//初始化通用定时器TIM2
     OS_CPU_SysTickInit();    //initialze the system clock
     //create two task LED0 and LED1
     OSTaskCreate(Task_LED0, (void *)0, &LED0TaskStk[LED0STKSIZE - 1], 5);

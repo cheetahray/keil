@@ -43,6 +43,10 @@ void loopback_udp(SOCKET s, uint16 port)
         {
             recvfrom(s,buff, len, remote_ip,&remote_port);               /*W5500接收计算机发送来的数据*/
             buff[len-8]=0x00;                                                    /*添加字符串结束符*/
+					  if(memcmp(buff,"p1on",4) == 0)
+						    TIM_Cmd(TIM2, ENABLE);//使能定时器			
+						else if(memcmp(buff,"p1off",5) == 0)
+                TIM_Cmd(TIM2, DISABLE);//使能定时器			
             printf("%s\r\n",buff);                                               /*打印接收缓存*/
             //sendto(s,buff,len-8, remote_ip, remote_port);                /*W5500把接收到的数据发送给Remote*/
         }
