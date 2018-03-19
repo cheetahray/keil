@@ -29,7 +29,7 @@ void Task_LED1(void *p_arg)
     unsigned char * msg;
     while(1)
     {
-        msg = (unsigned char *) OSMboxPend(Com1_MBOX, 1, &err);
+        msg=(unsigned char *)OSMboxPend(Com1_MBOX,0,&err); 		  //等待串口接收指令的消息邮箱 
         /*
         GPIO_SetBits(GPIOB, GPIO_Pin_0);    //on
         OSTimeDly(50);                    //half second
@@ -37,9 +37,11 @@ void Task_LED1(void *p_arg)
         OSTimeDly(50);
 			  */
         GPIO_SetBits(GPIOB, GPIO_Pin_1);    //on
-        OSTimeDly(100);    //one second
+        OSTimeDly(10);    //one second
         GPIO_ResetBits(GPIOB, GPIO_Pin_1);    //off
-        OSTimeDly(100);
+        OSTimeDly(10);
+		    if(msg)
+            memcpy(msg,"",1);
     }
 }
 /****************************************************************************
@@ -111,6 +113,7 @@ int main()
     USART_DMAToBuf1();//串口DMA配置
     TIM2_PWM_Init();//初始化通用定时器TIM2
     OS_CPU_SysTickInit();    //initialze the system clock
+    Com1_MBOX=OSMboxCreate((void *) 0);		 //建立串口1中断的邮箱
     //create two task LED0 and LED1
     OSTaskCreate(Task_LED0, (void *)0, &LED0TaskStk[LED0STKSIZE - 1], 5);
     OSTaskCreate(Task_LED1, (void *)0, &LED1TaskStk[LED1STKSIZE - 1], 6);

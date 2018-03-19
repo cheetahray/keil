@@ -77,7 +77,12 @@ void Nvic_Config_Key()
   */
 void EXTI9_5_IRQHandler(void)
 {  
-  
+  static unsigned char raymsg[3];
+	OS_CPU_SR  cpu_sr;
+  	
+	OS_ENTER_CRITICAL();  //保存全局中断标志,关总中断// Tell uC/OS-II that we are starting an ISR
+  	OSIntNesting++;	  	  //中断嵌套标志
+  	OS_EXIT_CRITICAL();	  //恢复全局中断标志		 		  
 /*检查指定的EXTI线路出发请求发生与否*//*
   if (EXTI_GetITStatus(KEY1_BUTTON_EXTI_LINE) != RESET)
   { 
@@ -98,12 +103,13 @@ void EXTI9_5_IRQHandler(void)
   if (EXTI_GetITStatus(KEY3_BUTTON_EXTI_LINE) != RESET)
   { 
     /*清除EXTI线路挂起位*/
-		OSMboxPost(Com1_MBOX,"Fa");
+    memcpy(raymsg,"Fa",3);
+    OSMboxPost(Com1_MBOX,(void *)&raymsg); 	        //将接收到的数据通过消息邮箱传递给串口1接收解析任务   
     EXTI_ClearITPendingBit(KEY3_BUTTON_EXTI_LINE); 
   /*D3状态翻转*/
    //LEDXToggle(LED3);
   }
-    	
+  OSIntExit();  //在os_core.c文件里定义,如果有更高优先级的任务就绪了,则执行一次任务切换  	
 }
 
 
