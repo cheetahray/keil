@@ -77,9 +77,8 @@ void Nvic_Config_Key()
   */
 void EXTI9_5_IRQHandler(void)
 {  
-  static unsigned char raymsg[3];
-	OS_CPU_SR  cpu_sr;
-  	
+  OS_CPU_SR  cpu_sr;
+  
 	OS_ENTER_CRITICAL();  //保存全局中断标志,关总中断// Tell uC/OS-II that we are starting an ISR
   	OSIntNesting++;	  	  //中断嵌套标志
   	OS_EXIT_CRITICAL();	  //恢复全局中断标志		 		  
@@ -103,8 +102,13 @@ void EXTI9_5_IRQHandler(void)
   if (EXTI_GetITStatus(KEY3_BUTTON_EXTI_LINE) != RESET)
   { 
     /*清除EXTI线路挂起位*/
-    memcpy(raymsg,"Fa",3);
-    OSMboxPost(Com1_MBOX,(void *)&raymsg); 	        //将接收到的数据通过消息邮箱传递给串口1接收解析任务   
+		unsigned char * msg;
+	  int msgsize = 3;  	
+		
+		msgsize *= sizeof(char);
+		msg = malloc(msgsize);
+    memcpy(msg,"Fa",msgsize);
+    OSMboxPost(Com1_MBOX,msg); 	        //将接收到的数据通过消息邮箱传递给串口1接收解析任务   
     EXTI_ClearITPendingBit(KEY3_BUTTON_EXTI_LINE); 
   /*D3状态翻转*/
    //LEDXToggle(LED3);

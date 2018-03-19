@@ -30,18 +30,21 @@ void Task_LED1(void *p_arg)
     while(1)
     {
         msg=(unsigned char *)OSMboxPend(Com1_MBOX,0,&err); 		  //等待串口接收指令的消息邮箱 
-        /*
-        GPIO_SetBits(GPIOB, GPIO_Pin_0);    //on
-        OSTimeDly(50);                    //half second
-        GPIO_ResetBits(GPIOB, GPIO_Pin_0);    //off
-        OSTimeDly(50);
-			  */
-        GPIO_SetBits(GPIOB, GPIO_Pin_1);    //on
-        OSTimeDly(10);    //one second
-        GPIO_ResetBits(GPIOB, GPIO_Pin_1);    //off
-        OSTimeDly(10);
-		    if(msg)
-            memcpy(msg,"",1);
+        if(msg)
+				{
+					  if(memcmp(msg,"Fa",3) == 0)
+						{
+								GPIO_SetBits(GPIOB, GPIO_Pin_0);    //on
+								OSTimeDly(5);                    //half second
+								GPIO_ResetBits(GPIOB, GPIO_Pin_0);    //off
+								OSTimeDly(5);
+								GPIO_SetBits(GPIOB, GPIO_Pin_1);    //on
+								OSTimeDly(5);    //one second
+								GPIO_ResetBits(GPIOB, GPIO_Pin_1);    //off
+								OSTimeDly(5);
+            }		    
+            free(msg);
+				}
     }
 }
 /****************************************************************************
