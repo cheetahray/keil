@@ -626,6 +626,21 @@
               <FileType>1</FileType>
               <FilePath>.\BSP\Base\SPIx.c</FilePath>
             </File>
+            <File>
+              <FileName>exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\Base\exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\Base\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>pwm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\Base\pwm.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

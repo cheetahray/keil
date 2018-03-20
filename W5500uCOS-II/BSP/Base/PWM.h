@@ -3,4 +3,6 @@
 
 #include "stm32f10x.h"
 void TIM2_PWM_Init(void);
+void TIM3_Config(void);
+void TIM2_Config(void);
 #endif

@@ -38,7 +38,7 @@ void Task_LED1(void *p_arg)
 								OSTimeDly(5);                    //half second
 								GPIO_ResetBits(GPIOB, GPIO_Pin_0);    //off
 								OSTimeDly(5);
-								GPIO_SetBits(GPIOB, GPIO_Pin_1);    //on
+                GPIO_SetBits(GPIOB, GPIO_Pin_1);    //on
 								OSTimeDly(5);    //one second
 								GPIO_ResetBits(GPIOB, GPIO_Pin_1);    //off
 								OSTimeDly(5);
@@ -98,7 +98,19 @@ void NVIC_Config(void)
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;	//中断向量使能
     NVIC_Init(&NVIC_InitStructure);	//初始化结构体
 	
-    Exti_Config();//初始化中断配置	
+    NVIC_InitStructure.NVIC_IRQChannel =TIM3_IRQn;//TIM3中断
+	  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;//占先式优先级设置为1
+	  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1; //副优先级设置为0
+	  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//中断使能
+	  NVIC_Init(&NVIC_InitStructure);//中断初始化
+	
+    NVIC_InitStructure.NVIC_IRQChannel =TIM2_IRQn;//TIM3中断
+	  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;//占先式优先级设置为1
+	  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2; //副优先级设置为0
+	  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//中断使能
+	  NVIC_Init(&NVIC_InitStructure);//中断初始化
+	
+	  Exti_Config();//初始化中断配置	
     Nvic_Config_Key();//初始化中断向量
   
 }
@@ -114,7 +126,9 @@ int main()
     LED_GPIO_Init();    //initialize the gpio
     USART1_Config();
     USART_DMAToBuf1();//串口DMA配置
-    TIM2_PWM_Init();//初始化通用定时器TIM2
+    //TIM2_PWM_Init();//初始化通用定时器TIM2
+    TIM2_Config();
+    TIM3_Config();
     OS_CPU_SysTickInit();    //initialze the system clock
     Com1_MBOX=OSMboxCreate((void *) 0);		 //建立串口1中断的邮箱
     //create two task LED0 and LED1
