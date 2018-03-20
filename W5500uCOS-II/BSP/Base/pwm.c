@@ -137,14 +137,14 @@ void TIM2_Config(void)
 void CWCCW(u8 ch)
 {
 	 TIM_Cmd(TIM3,DISABLE);		
-
+   TIM_ITConfig(TIM3, TIM_IT_CC1 | TIM_IT_CC2 | TIM_IT_Update, DISABLE);
    if(ch != 127)
    {		 
 		 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	   TIM_OCInitTypeDef  TIM_OCInitStructure;
 	
 	   /* 基础设置*/
-	   TIM_TimeBaseStructure.TIM_Period = 2000-1;	//计数值   
+	   TIM_TimeBaseStructure.TIM_Period = 600-1;	//计数值   
 	   if(ch > 127)
 		    TIM_TimeBaseStructure.TIM_Prescaler = 258-ch-1; //此值+1为分频的除数，一次数0.5ms
 		 else
@@ -157,7 +157,7 @@ void CWCCW(u8 ch)
 		 
 	   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Inactive;//输出比较非主动模式
   	 TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;//TIM输出比较极性为正
-		 TIM_OCInitStructure.TIM_Pulse = 1000;//通道1捕获比较值
+		 TIM_OCInitStructure.TIM_Pulse = 300;//通道1捕获比较值
 						
 		 if(ch > 127)
 		 {
