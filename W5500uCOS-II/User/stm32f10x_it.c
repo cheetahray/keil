@@ -160,35 +160,22 @@ void TIM3_IRQHandler(void)
   	OSIntNesting++;	  	  //中断嵌套标志
   	OS_EXIT_CRITICAL();	  //恢复全局中断标志		 		  
 
-	if (TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET)//判断TIM3的比较1通道是否有中断
+	if(TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET)//判断TIM3的比较1通道是否有中断
 	{
 		/*必须清空标志位*/
 		TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);//清除比较1中断标志位
-		GPIOA->BSRR=GPIO_Pin_4;//PB0=1
+		GPIOA->BRR=GPIO_Pin_4;//PB0=0
 	}
 	else if (TIM_GetITStatus(TIM3, TIM_IT_CC2) != RESET)//判断TIM3的比较2通道是否有中断
 	{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_CC2);//清除比较2中断标志位
-		GPIOA->BSRR=GPIO_Pin_5;//PB1=1
-	}/*
-	else if (TIM_GetITStatus(TIM3, TIM_IT_CC3) != RESET)//判断TIM3的比较3通道是否有中断
-	{
-		TIM_ClearITPendingBit(TIM3, TIM_IT_CC3);//清除比较3中断标志位
-		GPIOD->BSRR=GPIO_Pin_0;//PD0=1
+		GPIOA->BRR=GPIO_Pin_5;//PB1=0
 	}
-	else if (TIM_GetITStatus(TIM3, TIM_IT_CC4) != RESET)//判断TIM3的比较4通道是否有中断
-	{
-	  	TIM_ClearITPendingBit(TIM3, TIM_IT_CC4);//清除比较4中断标志位
-		GPIOD->BSRR=GPIO_Pin_1;//PD1=1
-	
-	}*/
 	else if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)//溢出中断
 	{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);//清除溢出中断标志位
-		GPIOA->BRR=GPIO_Pin_4;//PB0=0
-		GPIOA->BRR=GPIO_Pin_5;//PB1=0
-		/*GPIOD->BRR=GPIO_Pin_0;//PD0=0
-		GPIOD->BRR=GPIO_Pin_1;//PD1=0*/
+		GPIOA->BSRR=GPIO_Pin_4;//PB0=1
+		GPIOA->BSRR=GPIO_Pin_5;//PB1=1
 	}
 	OSIntExit();
 }

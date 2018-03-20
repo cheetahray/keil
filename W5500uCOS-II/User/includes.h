@@ -48,6 +48,7 @@
 #include  <app_cfg.h>
 #include  "usart.h"
 #include  "W5500_conf.h"
+#include  "W5500.h"
 #include  "udp_demo.h"
 #include  "socket.h"
 #include  "key.h"

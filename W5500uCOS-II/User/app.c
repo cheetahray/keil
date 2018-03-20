@@ -15,12 +15,13 @@ void LED_GPIO_Init(void)
 }
 void Task_LED0(void *p_arg)
 {
+    u8 lastch,ch;
     OSTimeDly(150);
     WizW5500_Init(IP_FROM_DEFINE);
     while(1)
     {   
         OSTimeDly(1);
-        loopback_udp(SOCK_UDPS, remote_port);/*UDP 数据回环测试*/
+        loopback_artnet(SOCK_UDPS, remote_port, &lastch, &ch);/*UDP 数据回环测试*/   
     }
 }
 void Task_LED1(void *p_arg)

@@ -9,11 +9,7 @@
 **/
 #include <stdio.h>
 #include <string.h>
-#include "w5500_conf.h"
-#include "w5500.h"
-#include "socket.h"
-#include "utility.h"
-#include "udp_demo.h"
+#include "includes.h"
 //#include "SYSTICK.h"
 
 /**
@@ -54,22 +50,10 @@ void loopback_udp(SOCKET s, uint16 port)
     }
 }
 
-void loopback_artnet(SOCKET s, uint16 port)
+void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch)
 {
     uint16 len=0;
-    uint8 buff[2048];																							/*定义一个2KB的缓存*/
-
-    uint8 packet_length=18;																				//artnet header length
-    int dmx_ch;                                                        /*counter to print DMX data*/
-    int opcode;
-    int protocal_ver;
-    int sequence;
-    int physical;
-    int sub_net;
-    int universe;
-    int net;
-    int dmx_length;
-
+    
     switch(getSn_SR(s))                                                /*获取socket的状态*/
     {
     case SOCK_CLOSED:                                                        /*socket处于关闭状态*/
@@ -84,27 +68,51 @@ void loopback_artnet(SOCKET s, uint16 port)
         }
         if((len=getSn_RX_RSR(s))>0)                                    /*接收到数据*/
         {
+				    uint8 buff[2048];																							/*定义一个2KB的缓存*/
+
+            uint8 packet_length=18;																				//artnet header length
+
             recvfrom(s,buff, len, remote_ip,& remote_port);               /*W5500接收计算机发送来的数据*/
             if(len>18 && 0 == memcmp(buff, "Art-Net\x00", 8) ) {																									 /*unpack artnet data*/
+	  						//int dmx_ch;                                                        /*counter to print DMX data*/
+    						int opcode;
+		    				//int protocal_ver;
+				    		//int sequence;
+						    //int physical;
+						    //int sub_net;
+						    int universe;
+						    //int net;
+						    int dmx_length;
+
                 opcode = buff[8]+(buff[9]<<8);
                 if(opcode==0x5000) {
-                    protocal_ver = buff[10]+(buff[11]);
-                    sequence = buff[12];
-                    physical = buff[13];
-                    sub_net = (buff[14]&0XF0)>>4;
+                    //protocal_ver = buff[10]+(buff[11]);
+                    //sequence = buff[12];
+                    //physical = buff[13];
+                    //sub_net = (buff[14]&0XF0)>>4;
                     universe = buff[14]&0X0F;
-                    net = buff[15];
-                    dmx_length = (buff[16]<<8)+buff[17];
+                    //net = buff[15];
+                    dmx_length = (buff[16]<<8)+buff[17];/*
                     printf("\r\n %s opc: %d, pver: %d, seq: %d, phy: %d, "
                            "sub_net: %d, uni: %d, net: %d, length: %d || "
-                           ,buff,opcode,protocal_ver,sequence,physical,		/*print artnet header data*/
+                           ,buff,opcode,protocal_ver,sequence,physical,		/*print artnet header data*//*
                            sub_net,universe,net, dmx_length);
-                    for(dmx_ch=0; dmx_ch<10; dmx_ch++) {
-                        printf("%d.",buff[dmx_ch+packet_length]);							/*print dmx data*/
-                    }
+                    for(dmx_ch=0; dmx_ch<3; dmx_ch++) {
+                        printf("%d.\t",buff[dmx_ch+packet_length]);							/*print dmx data*/
+                    //}
+                    if(dmx_length>=2)
+										{
+											 *ch = buff[packet_length];
+										   if(*lastch != *ch)
+											 {
+												 printf("%d.\t", *ch);							/*print dmx data*/
+												 *lastch = *ch;
+											   CWCCW(*ch);
+											 }
+										}
                 }
             }
-            sendto(s,buff,len-8, remote_ip, remote_port);                /*send artnet data to remote port*/
+            //sendto(s,buff,len-8, remote_ip, remote_port);                /*send artnet data to remote port*/
         }
         break;
     }
