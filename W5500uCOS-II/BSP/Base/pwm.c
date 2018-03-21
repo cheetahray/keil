@@ -116,11 +116,11 @@ void CWCCW(u8 ch)
 	   TIM_OCInitTypeDef  TIM_OCInitStructure;
 	
 	   /* 基础设置*/
-	   TIM_TimeBaseStructure.TIM_Period = 600-1;	//计数值   
+	   TIM_TimeBaseStructure.TIM_Prescaler = 2-1; //此值+1为分频的除数，一次数0.5ms
 	   if(ch > 127)
-		    TIM_TimeBaseStructure.TIM_Prescaler = 258-ch-1; //此值+1为分频的除数，一次数0.5ms
+		    TIM_TimeBaseStructure.TIM_Period = 65535/(ch-126)-1;	//计数值   
 		 else
-			  TIM_TimeBaseStructure.TIM_Prescaler = ch+3-1; //此值+1为分频的除数，一次数0.5ms
+			  TIM_TimeBaseStructure.TIM_Period = 65535/(128-ch)-1;	//计数值   
 		 
 	   TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;  //采样分频
 	   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;//向上计数
@@ -129,18 +129,18 @@ void CWCCW(u8 ch)
 		 
 	   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Inactive;//输出比较非主动模式
   	 TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;//TIM输出比较极性为正
-		 TIM_OCInitStructure.TIM_Pulse = 300;//通道1捕获比较值
+		 TIM_OCInitStructure.TIM_Pulse = (TIM_TimeBaseStructure.TIM_Period >> 1);//通道1捕获比较值
 						
 		 if(ch > 127)
 		 {
 				/* 比较通道1配置*/
-				TIM_OC1Init(TIM3, &TIM_OCInitStructure);//根据TIM_OCInitStruct中指定的参数初始化TIM3
+			  TIM_OC1Init(TIM3, &TIM_OCInitStructure);//根据TIM_OCInitStruct中指定的参数初始化TIM3
 				TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
 		 }
 		 else
 		 {
 				/*比较通道2 */        
-				TIM_OC2Init(TIM3, &TIM_OCInitStructure);//用指定的参数初始化TIM3 
+			  TIM_OC2Init(TIM3, &TIM_OCInitStructure);//用指定的参数初始化TIM3 
 				TIM_OC2PreloadConfig(TIM3, TIM_OCPreload_Enable);
 	   }
 		 
@@ -168,8 +168,8 @@ void LIGHT(u8 ch)
 	OSIntNesting++;	  	  //中断嵌套标志
 	TIM_Cmd(TIM2, DISABLE); //使能定时器2
 	/* 基础设置*/
-	TIM_TimeBaseStructure.TIM_Period = 2560-1;	//计数值   
-	TIM_TimeBaseStructure.TIM_Prescaler = 75-1; //此值+1为分频的除数，一次数0.5ms
+	TIM_TimeBaseStructure.TIM_Period = 25600-1;	//计数值   
+	TIM_TimeBaseStructure.TIM_Prescaler = 10-1; //此值+1为分频的除数，一次数0.5ms
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;  //采样分频
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;//向上计数
 	
@@ -178,7 +178,7 @@ void LIGHT(u8 ch)
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Inactive;//输出比较非主动模式
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;//TIM输出比较极性为正
 	/* 比较通道1配置*/
-	TIM_OCInitStructure.TIM_Pulse = 2559-ch*10;//通道1捕获比较值
+	TIM_OCInitStructure.TIM_Pulse = 25550-ch*100;//通道1捕获比较值
 	TIM_OC1Init(TIM2, &TIM_OCInitStructure);//根据TIM_OCInitStruct中指定的参数初始化TIM2
 	TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Enable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
 	
