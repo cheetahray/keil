@@ -84,45 +84,15 @@ void TIM3_Config(void)
 ***********************************************************/
 void TIM2_Config(void)
 {
-	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-	TIM_OCInitTypeDef  TIM_OCInitStructure;
 	GPIO_InitTypeDef         GPIO_InitStructure;
 	/* TIM2 clock enable */
-  	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-	  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);//使能GPIOA时钟和复用功能时钟
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);//使能GPIOA时钟和复用功能时钟
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; //TIM2二通道PWM波形输出端口PA1
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;//复用推挽输出
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;//50MHz
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	/* 基础设置*/
-	TIM_TimeBaseStructure.TIM_Period = 4000-1;	//计数值   
-	TIM_TimeBaseStructure.TIM_Prescaler = 200-1; //此值+1为分频的除数，一次数0.5ms
-	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;  //采样分频
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;//向上计数
 	
-	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);	
-	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Inactive;//输出比较非主动模式
-	/* 比较通道1配置*/
-	TIM_OCInitStructure.TIM_Pulse = 2000;//通道1捕获比较值
-	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;//TIM输出比较极性为正
-	TIM_OC1Init(TIM2, &TIM_OCInitStructure);//根据TIM_OCInitStruct中指定的参数初始化TIM2
-	TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Disable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
-	
-	/*比较通道2 *//*
-	TIM_OCInitStructure.TIM_Pulse = 20000;//通道2捕获比较值  
-	TIM_OC2Init(TIM2, &TIM_OCInitStructure);//用指定的参数初始化TIM2 
-	TIM_OC2PreloadConfig(TIM2, TIM_OCPreload_Disable);
-	
-	/* 比较通道3 *//*         
-	TIM_OCInitStructure.TIM_Pulse = 2000; //通道3捕获比较值 
-	TIM_OC3Init(TIM2, &TIM_OCInitStructure);
-	TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Disable);
-	
-	/* 比较通道4 *//*       
-	TIM_OCInitStructure.TIM_Pulse = 4000;//通道4捕获比较值  
-	TIM_OC4Init(TIM2, &TIM_OCInitStructure);
-	TIM_OC4PreloadConfig(TIM2, TIM_OCPreload_Disable);
-
 	/*使能预装载*/
 	TIM_ARRPreloadConfig(TIM2, ENABLE);	
 	/*预先清除所有中断位*/
@@ -131,7 +101,6 @@ void TIM2_Config(void)
 	/* 4个通道和溢出都配置中断*/
 	TIM_ITConfig(TIM2, TIM_IT_CC1 | /*TIM_IT_CC2 | TIM_IT_CC3 | TIM_IT_CC4|*/TIM_IT_Update, ENABLE);
 	
-	TIM_Cmd(TIM2, ENABLE); //使能定时器2
 }
 
 void CWCCW(u8 ch)
@@ -187,9 +156,24 @@ void CWCCW(u8 ch)
 
 void LIGHT(u8 ch)
 {
-	 TIM_OCInitTypeDef  TIM3_OCInitStructure;
-	 TIM3_OCInitStructure.TIM_OutputState = TIM_OutputState_Disable;
- 	 TIM_OC1Init(TIM3, &TIM3_OCInitStructure);
-   TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Disable);
-	 TIM_Cmd(TIM3,ENABLE);	
+	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+	TIM_OCInitTypeDef  TIM_OCInitStructure;
+	
+	TIM_Cmd(TIM2, DISABLE); //使能定时器2
+	/* 基础设置*/
+	TIM_TimeBaseStructure.TIM_Period = 2560-1;	//计数值   
+	TIM_TimeBaseStructure.TIM_Prescaler = 75-1; //此值+1为分频的除数，一次数0.5ms
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;  //采样分频
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;//向上计数
+	
+	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);	
+	
+	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Inactive;//输出比较非主动模式
+	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;//TIM输出比较极性为正
+	/* 比较通道1配置*/
+	TIM_OCInitStructure.TIM_Pulse = 2559-ch*10;//通道1捕获比较值
+	TIM_OC1Init(TIM2, &TIM_OCInitStructure);//根据TIM_OCInitStruct中指定的参数初始化TIM2
+	TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Enable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
+	
+	TIM_Cmd(TIM2, ENABLE); //使能定时器2
 }

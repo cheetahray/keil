@@ -50,7 +50,7 @@ void loopback_udp(SOCKET s, uint16 port)
     }
 }
 
-void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch)
+void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch, u8 * lastlight, u8 * watt)
 {
     uint16 len=0;
     
@@ -103,11 +103,18 @@ void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch)
                     if(dmx_length>=2)
 										{
 											 *ch = buff[packet_length];
+										   *watt = buff[packet_length+1];
 										   if(*lastch != *ch)
 											 {
-												 printf("%d.\t", *ch);							/*print dmx data*/
+												 printf("ch1= %d.\t", *ch);							/*print dmx data*/
 												 *lastch = *ch;
 											   CWCCW(*ch);
+											 }
+											 else if(*lastlight != *watt)
+											 {
+												 printf("ch2= %d.\t", *watt);							/*print dmx data*/
+												 *lastlight = *watt;
+											   LIGHT(*watt);
 											 }
 										}
                 }
