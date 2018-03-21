@@ -12,7 +12,7 @@
 
 //头文件
 #include "PWM.h"
-
+#include  <ucos_ii.h>
  /**
   * @file   TIM2_PWM_Init
   * @brief  初始化TIM2通道的PWM端口
@@ -105,6 +105,9 @@ void TIM2_Config(void)
 
 void CWCCW(u8 ch)
 {
+	 OS_CPU_SR  cpu_sr;
+	 OS_ENTER_CRITICAL();  //保存全局中断标志,关总中断// Tell uC/OS-II that we are starting an ISR
+	 OSIntNesting++;	  	  //中断嵌套标志
 	 TIM_Cmd(TIM3,DISABLE);		
    TIM_ITConfig(TIM3, TIM_IT_CC1 | TIM_IT_CC2 | TIM_IT_Update, DISABLE);
    if(ch != 127)
@@ -151,14 +154,18 @@ void CWCCW(u8 ch)
 	
 	   TIM_Cmd(TIM3, ENABLE); //使能定时器2
 		 
-	 }						
+	 }	
+   OS_EXIT_CRITICAL();  //保存全局中断标志,关总中断// Tell uC/OS-II that we are starting an ISR	 
+	 OSIntExit();
 }
 
 void LIGHT(u8 ch)
 {
 	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	TIM_OCInitTypeDef  TIM_OCInitStructure;
-	
+	OS_CPU_SR  cpu_sr;
+	OS_ENTER_CRITICAL();  //保存全局中断标志,关总中断// Tell uC/OS-II that we are starting an ISR
+	OSIntNesting++;	  	  //中断嵌套标志
 	TIM_Cmd(TIM2, DISABLE); //使能定时器2
 	/* 基础设置*/
 	TIM_TimeBaseStructure.TIM_Period = 2560-1;	//计数值   
@@ -176,4 +183,6 @@ void LIGHT(u8 ch)
 	TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Enable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
 	
 	TIM_Cmd(TIM2, ENABLE); //使能定时器2
+	OS_EXIT_CRITICAL();  //保存全局中断标志,关总中断// Tell uC/OS-II that we are starting an ISR
+	OSIntExit();
 }

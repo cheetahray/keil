@@ -68,7 +68,7 @@ void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch, u8 * lastlight
         }
         if((len=getSn_RX_RSR(s))>0)                                    /*接收到数据*/
         {
-				    uint8 buff[2048];																							/*定义一个2KB的缓存*/
+				    static uint8 buff[768];																							/*定义一个2KB的缓存*/
 
             uint8 packet_length=18;																				//artnet header length
 

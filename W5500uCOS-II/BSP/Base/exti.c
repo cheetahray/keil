@@ -64,7 +64,7 @@ void Nvic_Config_Key()
 	
   NVIC_InitStructure.NVIC_IRQChannel = /*KEY1_BUTTON_EXTI_IRQn|KEY2_BUTTON_EXTI_IRQn|*/KEY3_BUTTON_EXTI_IRQn;//配置选中的中断向量,指定中断源
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority =0; //配置抢占优先级:抢占式中断优先级设置为0
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 5; //配置响应优先级:响应式中断优先级设置为0
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1; //配置响应优先级:响应式中断优先级设置为0
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //使能中断向量
   NVIC_Init(&NVIC_InitStructure);  //初始化NVIC
 }
