@@ -108,7 +108,7 @@ void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch, u8 * lastlight
 											 {
 												 printf("ch1= %d.\t", *ch);							/*print dmx data*/
 												 *lastch = *ch;
-											   CWCCW(*ch);
+												 CWCCW(*ch);
 											 }
 											 else if(*lastlight != *watt)
 											 {

@@ -20,7 +20,7 @@ void Task_LED0(void *p_arg)
     WizW5500_Init(IP_FROM_DEFINE);
     while(1)
     {   
-        OSTimeDly(1);
+        OSTimeDly(5);
         loopback_artnet(SOCK_UDPS, remote_port, &lastch, &ch, &lastlight, &watt);/*UDP 数据回环测试*/   
     }
 }
