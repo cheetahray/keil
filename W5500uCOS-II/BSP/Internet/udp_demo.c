@@ -53,7 +53,7 @@ void loopback_udp(SOCKET s, uint16 port)
 void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch, u8 * lastlight, u8 * watt)
 {
     uint16 len=0;
-    
+            
     switch(getSn_SR(s))                                                /*获取socket的状态*/
     {
     case SOCK_CLOSED:                                                        /*socket处于关闭状态*/
@@ -68,11 +68,9 @@ void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch, u8 * lastlight
         }
         if((len=getSn_RX_RSR(s))>0)                                    /*接收到数据*/
         {
-				    static uint8 buff[768];																							/*定义一个2KB的缓存*/
-
-            uint8 packet_length=18;																				//artnet header length
-
-            recvfrom(s,buff, len, remote_ip,& remote_port);               /*W5500接收计算机发送来的数据*/
+					  static uint8 buff[768];																							/*定义一个2KB的缓存*/
+                       
+				    recvfrom(s,buff, len, remote_ip,& remote_port);               /*W5500接收计算机发送来的数据*/
             if(len>18 && 0 == memcmp(buff, "Art-Net\x00", 8) ) {																									 /*unpack artnet data*/
 	  						//int dmx_ch;                                                        /*counter to print DMX data*/
     						int opcode;
@@ -102,13 +100,23 @@ void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch, u8 * lastlight
                     //}
                     if(dmx_length>=2)
 										{
+											 static uint8 Vacc[4];
+	                     uint8 packet_length=18;																				//artnet header length
+    
 											 *ch = buff[packet_length];
 										   *watt = buff[packet_length+1];
 										   if(*lastch != *ch)
 											 {
 												 printf("ch1= %d.\t", *ch);							/*print dmx data*/
+												 Vacc[0] = *ch;
+												 if(*lastch == 127 && Vacc[2] != 3 && Vacc[3] != 2)
+												 {
+													   Vacc[1] = *lastch;
+												     Vacc[2] = 3;
+												     Vacc[3] = 2;
+												 }
 												 *lastch = *ch;
-												 CWCCW(*ch);
+												 OSMboxPost(CWCCW_MBOX, Vacc);
 											 }
 											 else if(*lastlight != *watt)
 											 {

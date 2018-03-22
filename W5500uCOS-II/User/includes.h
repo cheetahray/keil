@@ -78,7 +78,7 @@
 #endif
 
 EXT OS_EVENT* Com1_MBOX;  
-
+EXT OS_EVENT* CWCCW_MBOX;  
 /*
 EXT unsigned char TxBuffer1[400]; 
  

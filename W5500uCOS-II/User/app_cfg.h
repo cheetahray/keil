@@ -50,14 +50,14 @@
 *                                            TASK PRIORITIES
 *********************************************************************************************************
 */
-
+#define  Task_Network_PRIO                                   8 
 #define  APP_TASK_START_PRIO                               3
-#define  Task_Com1_PRIO                                   7 
+#define  Task_Com1_PRIO                                    7 
 #define  APP_TASK_USER_IF_PRIO                            12
-
+#define  Task_CWCCW_PRIO                                   6 
 #define  OS_PROBE_TASK_PRIO              (OS_LOWEST_PRIO - 3)
 #define  OS_TASK_TMR_PRIO                (OS_LOWEST_PRIO - 2)
-
+#define  Task_Key_PRIO                                     5 
 /*
 *********************************************************************************************************
 *                                            TASK STACK SIZES
@@ -68,9 +68,10 @@
 #define  APP_TASK_START_STK_SIZE                         128
 #define  APP_TASK_KBD_STK_SIZE                           128
 #define  Task_Com1_STK_SIZE                              256
+#define  Task_CWCCW_STK_SIZE                             256
 #define  APP_TASK_USER_IF_STK_SIZE                       256
-#define LED0STKSIZE 1000
-#define LED1STKSIZE 1000
+#define  NetworkSTKSIZE                                  256
+#define  KeySTKSIZE                                      128
 #define  OS_PROBE_TASK_STK_SIZE                          128
 
 /*

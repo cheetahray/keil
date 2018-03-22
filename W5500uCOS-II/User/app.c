@@ -13,9 +13,9 @@ void LED_GPIO_Init(void)
     
     KEY_GPIO_Config();//按键引脚配置
 }
-void Task_LED0(void *p_arg)
+void Task_Network(void *p_arg)
 {
-    u8 lastch,ch, lastlight, watt;
+    u8 lastch = 127,ch, lastlight, watt;
     OSTimeDly(150);
     WizW5500_Init(IP_FROM_DEFINE);
     while(1)
@@ -24,7 +24,7 @@ void Task_LED0(void *p_arg)
         loopback_artnet(SOCK_UDPS, remote_port, &lastch, &ch, &lastlight, &watt);/*UDP 数据回环测试*/   
     }
 }
-void Task_LED1(void *p_arg)
+void Task_Key(void *p_arg)
 {
     INT8U err;
     unsigned char * msg;
@@ -48,6 +48,47 @@ void Task_LED1(void *p_arg)
 				}
     }
 }
+void Task_CWCCW(void *p_arg)
+{
+    INT8U err, V0, a2, t3, V;
+    unsigned char * msg;
+	  
+    while(1)
+    {
+        msg=(unsigned char *)OSMboxPend(CWCCW_MBOX,0,&err); 		  //等待串口接收指令的消息邮箱 
+			  if(msg)
+				{
+					V = *msg;
+					V0 = *(msg+1);
+					a2 = *(msg+2);
+					t3 = *(msg+3);
+					
+					if( V < V0 ) 
+					{
+						 if(V0 - V < a2 * t3)
+						     V0 = V;
+						 else
+						     V0 = V0 - a2 * t3;
+					}
+					else if(V > V0)
+					{
+						 if(V - V0 < a2 * t3)
+						     V0 = V;
+						 else
+						     V0 = V0 + a2 * t3;
+					}
+					CWCCW(V0);				
+        	if( V != V0 )
+					{
+						*(msg+1) = V0;
+						OSMboxPost(CWCCW_MBOX, msg); 	        //将接收到的数据通过消息邮箱传递给串口1接收解析任务   
+					}
+					OSTimeDly(t3 << 3);                    //half second
+				}
+				//OSTimeDly(1);                    //half second
+    }
+}
+
 /****************************************************************************
 * 名    称：static  void Task_Com1(void *p_arg)
 * 功    能：串口1任务
@@ -80,6 +121,7 @@ void Task_Com1(void *p_arg) {
                 }
             }
         }
+				OSTimeDly(1);
     }
 }
 /**********************************************************
@@ -116,9 +158,10 @@ void NVIC_Config(void)
   
 }
 
-OS_STK LED0TaskStk[LED0STKSIZE];
-OS_STK LED1TaskStk[LED1STKSIZE];
+OS_STK NetworkTaskStk[NetworkSTKSIZE];
+OS_STK KeyTaskStk[KeySTKSIZE];
 OS_STK Task_Com1Stk[Task_Com1_STK_SIZE];
+OS_STK Task_CWCCWStk[Task_CWCCW_STK_SIZE];
 int main()
 {
     OSInit();                    //initialize the os
@@ -132,12 +175,13 @@ int main()
     TIM3_Config();
     OS_CPU_SysTickInit();    //initialze the system clock
     Com1_MBOX=OSMboxCreate((void *) 0);		 //建立串口1中断的邮箱
+	  CWCCW_MBOX=OSMboxCreate((void *) 0);		 //建立串口1中断的邮箱
     //create two task LED0 and LED1
-    OSTaskCreate(Task_LED0, (void *)0, &LED0TaskStk[LED0STKSIZE - 1], 5);
-    OSTaskCreate(Task_LED1, (void *)0, &LED1TaskStk[LED1STKSIZE - 1], 6);
+    OSTaskCreate(Task_Network, (void *)0, &NetworkTaskStk[NetworkSTKSIZE - 1], Task_Network_PRIO);
+    OSTaskCreate(Task_Key, (void *)0, &KeyTaskStk[KeySTKSIZE - 1], Task_Key_PRIO);
     //串口1接收及发送任务---------------------------------------------------------
     OSTaskCreate(Task_Com1,(void *)0,&Task_Com1Stk[Task_Com1_STK_SIZE-1],Task_Com1_PRIO);
-
+    OSTaskCreate(Task_CWCCW,(void *)0,&Task_CWCCWStk[Task_CWCCW_STK_SIZE-1],Task_CWCCW_PRIO);
     OSStart();    //start the os
     return 0;
 }
