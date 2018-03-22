@@ -164,12 +164,26 @@ void TIM3_IRQHandler(void)
 	{
 		/*必须清空标志位*/
 		TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);//清除比较1中断标志位
-		GPIOA->BRR=GPIO_Pin_4;//PB0=0
+		if(stepray != hereray)
+		{
+		   GPIOA->BRR=GPIO_Pin_4;//PB0=0
+		   if(STEPAROUND == stepray)
+		      stepray = 0;
+		   else
+		      stepray++;
+		}
 	}
 	else if (TIM_GetITStatus(TIM3, TIM_IT_CC2) != RESET)//判断TIM3的比较2通道是否有中断
 	{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_CC2);//清除比较2中断标志位
-		GPIOA->BRR=GPIO_Pin_5;//PB1=0
+		if(stepray != hereray)
+		{
+		  GPIOA->BRR=GPIO_Pin_5;//PB1=0
+			if(0 == stepray)
+				stepray = STEPAROUND;
+			else
+				stepray--;
+		}
 	}
 	else if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)//溢出中断
 	{

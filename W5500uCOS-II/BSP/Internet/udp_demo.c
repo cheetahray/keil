@@ -50,7 +50,7 @@ void loopback_udp(SOCKET s, uint16 port)
     }
 }
 
-void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch, u8 * lastlight, u8 * watt)
+void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch, u8 * lastlight, u8 * watt, u8 * lastchangle, u8 * changle)
 {
     uint16 len=0;
             
@@ -68,7 +68,7 @@ void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch, u8 * lastlight
         }
         if((len=getSn_RX_RSR(s))>0)                                    /*接收到数据*/
         {
-					  static uint8 buff[768];																							/*定义一个2KB的缓存*/
+					  static uint8 buff[513];																							/*定义一个2KB的缓存*/
                        
 				    recvfrom(s,buff, len, remote_ip,& remote_port);               /*W5500接收计算机发送来的数据*/
             if(len>18 && 0 == memcmp(buff, "Art-Net\x00", 8) ) {																									 /*unpack artnet data*/
@@ -100,29 +100,55 @@ void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch, u8 * lastlight
                     //}
                     if(dmx_length>=2)
 										{
-											 static uint8 Vacc[4];
+											 static uint8 Vacc[5];
 	                     uint8 packet_length=18;																				//artnet header length
-    
+                       uint8 boolangle;
 											 *ch = buff[packet_length];
 										   *watt = buff[packet_length+1];
-										   if(*lastch != *ch)
+											 *changle = buff[packet_length+2];
+											 boolangle = (*changle < 250);
+											 if(*lastch == 127 && Vacc[2] != 3 && Vacc[3] != 2)
 											 {
-												 printf("ch1= %d.\t", *ch);							/*print dmx data*/
-												 Vacc[0] = *ch;
-												 if(*lastch == 127 && Vacc[2] != 3 && Vacc[3] != 2)
-												 {
-													   Vacc[1] = *lastch;
-												     Vacc[2] = 3;
-												     Vacc[3] = 2;
-												 }
-												 *lastch = *ch;
-												 OSMboxPost(CWCCW_MBOX, Vacc);
+													Vacc[1] = *lastch;
+												  Vacc[2] = 3;
+												  Vacc[3] = 2;
+													stepray = angle2step(*changle);
 											 }
-											 else if(*lastlight != *watt)
+											 else if(0 == boolangle && *lastch != *ch)
 											 {
-												 printf("ch2= %d.\t", *watt);							/*print dmx data*/
-												 *lastlight = *watt;
-											   LIGHT(*watt);
+												  printf("ch1= %d.\t", *ch);							/*print dmx data*/
+												  Vacc[0] = *ch;
+												  *lastch = *ch;
+												  OSMboxPost(CWCCW_MBOX, Vacc);
+											 }
+											 else if(*lastchangle != *changle)
+											 {
+												  Vacc[4] = *changle;
+											    if(boolangle)
+					                {
+														 if(*lastchangle < *changle)
+														 {
+															  Vacc[0] = 130;
+														 }
+														 else
+														 {  
+															  Vacc[0] = 124;
+														 }
+														 OSMboxPost(CWCCW_MBOX, Vacc);
+					                }
+					                else
+					                {
+														 if(255 == *changle)
+														     *lastch = 127;
+					                   hereray = STEPAROUND + 1;
+					                } 
+												  *lastchangle = *changle;
+											 }
+										   else if(*lastlight != *watt)
+											 {
+												  printf("ch2= %d.\t", *watt);							/*print dmx data*/
+												  *lastlight = *watt;
+											    LIGHT(*watt);
 											 }
 										}
                 }

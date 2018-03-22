@@ -109,6 +109,7 @@ void EXTI9_5_IRQHandler(void)
 		msg = malloc(msgsize);
     memcpy(msg,"Fa",msgsize);
     OSMboxPost(Com1_MBOX,msg); 	        //将接收到的数据通过消息邮箱传递给串口1接收解析任务   
+		stepray = 0;
     EXTI_ClearITPendingBit(KEY3_BUTTON_EXTI_LINE); 
   /*D3状态翻转*/
    //LEDXToggle(LED3);

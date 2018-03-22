@@ -15,13 +15,14 @@ void LED_GPIO_Init(void)
 }
 void Task_Network(void *p_arg)
 {
-    u8 lastch = 127,ch, lastlight, watt;
+    u8 lastch = 127,ch, lastlight, watt, lastchangle, changle;
     OSTimeDly(150);
     WizW5500_Init(IP_FROM_DEFINE);
+    stepray = 0;
     while(1)
     {   
         OSTimeDly(5);
-        loopback_artnet(SOCK_UDPS, remote_port, &lastch, &ch, &lastlight, &watt);/*UDP 数据回环测试*/   
+        loopback_artnet(SOCK_UDPS, remote_port, &lastch, &ch, &lastlight, &watt, &lastchangle, &changle);/*UDP 数据回环测试*/   
     }
 }
 void Task_Key(void *p_arg)
@@ -50,7 +51,7 @@ void Task_Key(void *p_arg)
 }
 void Task_CWCCW(void *p_arg)
 {
-    INT8U err, V0, a2, t3, V;
+    INT8U err, V0, a2, t3, V, changle;
     unsigned char * msg;
 	  
     while(1)
@@ -62,26 +63,30 @@ void Task_CWCCW(void *p_arg)
 					V0 = *(msg+1);
 					a2 = *(msg+2);
 					t3 = *(msg+3);
-					
+					changle = *(msg+4);
 					if( V < V0 ) 
 					{
 						 if(V0 - V < a2 * t3)
-						     V0 = V;
+								 V0 = V;
 						 else
-						     V0 = V0 - a2 * t3;
+								 V0 = V0 - a2 * t3;
 					}
 					else if(V > V0)
 					{
 						 if(V - V0 < a2 * t3)
-						     V0 = V;
+								 V0 = V;
 						 else
-						     V0 = V0 + a2 * t3;
+								 V0 = V0 + a2 * t3;
 					}
 					CWCCW(V0);				
         	if( V != V0 )
 					{
 						*(msg+1) = V0;
 						OSMboxPost(CWCCW_MBOX, msg); 	        //将接收到的数据通过消息邮箱传递给串口1接收解析任务   
+					}
+					else
+				  {
+					  hereray = angle2step(changle);
 					}
 					OSTimeDly(t3 << 3);                    //half second
 				}

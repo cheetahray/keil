@@ -28,13 +28,13 @@
 
 #ifndef  __INCLUDES_H__
 #define  __INCLUDES_H__
-
+#define STEPAROUND 800
 #include  <stdio.h>
 #include  <string.h>
 #include  <ctype.h>
 #include  <stdlib.h>
 #include  <stdarg.h>
-
+#define angle2step(changle)  ( ( (changle) << 4 ) / 5 ) //STEPAROUND
 #include  <ucos_ii.h>
 /*
 #include  <cpu.h>
@@ -76,7 +76,7 @@
 #else
 #define EXT extern 
 #endif
-
+EXT INT16U stepray, hereray;
 EXT OS_EVENT* Com1_MBOX;  
 EXT OS_EVENT* CWCCW_MBOX;  
 /*
