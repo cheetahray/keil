@@ -152,7 +152,7 @@ void SysTick_Handler(void)
   * @param  None
   * @retval None
   */
-void TIM3_IRQHandler(void)
+void TIM2_IRQHandler(void)
 {   
 	OS_CPU_SR  cpu_sr;
   
@@ -160,10 +160,16 @@ void TIM3_IRQHandler(void)
   	OSIntNesting++;	  	  //中断嵌套标志
   	OS_EXIT_CRITICAL();	  //恢复全局中断标志		 		  
 
-	if(TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET)//判断TIM3的比较1通道是否有中断
+	/*
+    if ( TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET )
+    {
+        timer2_isr(); W5500
+        TIM_ClearITPendingBit(TIM3, TIM_FLAG_Update);
+    }*/
+  if(TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)//判断TIM2的比较1通道是否有中断
 	{
 		/*必须清空标志位*/
-		TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);//清除比较1中断标志位
+		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);//清除比较1中断标志位
 		if(stepray != hereray)
 		{
 		   GPIOA->BRR=GPIO_Pin_4;//PB0=0
@@ -173,9 +179,9 @@ void TIM3_IRQHandler(void)
 		      stepray++;
 		}
 	}
-	else if (TIM_GetITStatus(TIM3, TIM_IT_CC2) != RESET)//判断TIM3的比较2通道是否有中断
+	else if (TIM_GetITStatus(TIM2, TIM_IT_CC2) != RESET)//判断TIM2的比较2通道是否有中断
 	{
-		TIM_ClearITPendingBit(TIM3, TIM_IT_CC2);//清除比较2中断标志位
+		TIM_ClearITPendingBit(TIM2, TIM_IT_CC2);//清除比较2中断标志位
 		if(stepray != hereray)
 		{
 		  GPIOA->BRR=GPIO_Pin_5;//PB1=0
@@ -185,42 +191,37 @@ void TIM3_IRQHandler(void)
 				stepray--;
 		}
 	}
-	else if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)//溢出中断
+	else if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)//溢出中断
 	{
-		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);//清除溢出中断标志位
+		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);//清除溢出中断标志位
 		GPIOA->BSRR=GPIO_Pin_4;//PB0=1
 		GPIOA->BSRR=GPIO_Pin_5;//PB1=1
 	}
 	OSIntExit();
 }
-
-void TIM2_IRQHandler(void)
+/*
+void TIM3_IRQHandler(void)
 {   
 	OS_CPU_SR  cpu_sr;
   
 	OS_ENTER_CRITICAL();  //保存全局中断标志,关总中断// Tell uC/OS-II that we are starting an ISR
   	OSIntNesting++;	  	  //中断嵌套标志
   	OS_EXIT_CRITICAL();	  //恢复全局中断标志		 		  
-	/*
-    if ( TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET )
-    {
-        timer2_isr(); W5500
-        TIM_ClearITPendingBit(TIM2, TIM_FLAG_Update);
-    }*/
-  if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)//判断TIM2的比较1通道是否有中断
+	
+  if (TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET)//判断TIM3的比较1通道是否有中断
 	{
-		/*必须清空标志位*/
-		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);//清除比较1中断标志位
+		/*必须清空标志位*//*
+		TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);//清除比较1中断标志位
 		GPIOA->BSRR=GPIO_Pin_6;//PB0=1
 	}
-	else if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)//溢出中断
+	else if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)//溢出中断
 	{
-		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);//清除溢出中断标志位
+		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);//清除溢出中断标志位
 		GPIOA->BRR=GPIO_Pin_6;//PB0=0
 	}
 	OSIntExit();
 }
-
+*/
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
