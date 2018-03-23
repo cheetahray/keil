@@ -15,9 +15,9 @@
 #define KEY2_BUTTON_EXTI_LINE             EXTI_Line8
 #define KEY2_BUTTON_EXTI_IRQn             EXTI9_5_IRQn
 */
-#define KEY3_BUTTON_EXTI_PORT_SOURCE      GPIO_PortSourceGPIOB
-#define KEY3_BUTTON_EXTI_PIN_SOURCE       GPIO_PinSource9
-#define KEY3_BUTTON_EXTI_LINE             EXTI_Line9
+#define KEY3_BUTTON_EXTI_PORT_SOURCE      GPIO_PortSourceGPIOA
+#define KEY3_BUTTON_EXTI_PIN_SOURCE       GPIO_PinSource7
+#define KEY3_BUTTON_EXTI_LINE             EXTI_Line7
 #define KEY3_BUTTON_EXTI_IRQn             EXTI9_5_IRQn
 
 
