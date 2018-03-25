@@ -129,7 +129,7 @@ def ID_callback(path, tags, args, source):
     #https://pythonprogramming.net/urllib-tutorial-python-3/
     print (path, args[0])
     over ("/IDdata", args[0], 11, 2) #phone number, role number, color num
-    #print sock
+    #如果此會員還沒註冊，回傳 /error 0or1or2...
     sock.sendto(args[0] + "!@#" + "叡叡叡",("192.168.1.200",5678))
     sock.sendto(args[0] + "!@#" + "叡叡叡",("192.168.1.200",8765))   	
 
@@ -139,7 +139,7 @@ def IDscore_callback(path, tags, args, source):
     #run = False
     #add old data then restore back
     print (path, args[0], args[1], args[2]) #這次總分 這次進球數
-    over("/update", args[0], 1, 1)
+    over("/update", args[0], 1, 1) #如果上傳不成功，/update 0
 
 def user_callback(path, tags, args, source):
     # which user will be determined by path:
