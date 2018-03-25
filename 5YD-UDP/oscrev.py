@@ -1,9 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
 from OSC import *
 import sys
 from time import sleep
 import random
-
+import socket
+import _thread
 #         1                2              3                4                5
 XY=[[32,[320,64]],   [96,[374,10]], [160,[394,-10]], [272,[398,-14]], [304,[398,-14]], #1
   [416,[398,-14]], [448,[398,-14]], [560,[398,-14]], [592,[398,-14]], [704,[398,-14]], #2
@@ -116,6 +118,7 @@ def get_callback(path, tags, args, source):
     click (path, args[0], ( ( 220 * int(args[1]) )  >> 7 ) - 100)  #220 * Y / 128 - 100  
     
 def ID_callback(path, tags, args, source):
+    global sock
     # don't do this at home (or it'll quit blender)
     #global run
     #run = False
@@ -125,13 +128,18 @@ def ID_callback(path, tags, args, source):
     #https://my.oschina.net/sukai/blog/611451
     #https://pythonprogramming.net/urllib-tutorial-python-3/
     print (path, args[0])
-    over ("/IDdata", args[0], 11, 2)    	
+    over ("/IDdata", args[0], 11, 2) #phone number, role number, color num
+    #print sock
+    sock.sendto(args[0] + "!@#" + "叡叡叡",("192.168.1.200",5678))
+    sock.sendto(args[0] + "!@#" + "叡叡叡",("192.168.1.200",8765))   	
 
 def IDscore_callback(path, tags, args, source):
     # don't do this at home (or it'll quit blender)
     #global run
     #run = False
-    print (path, args[0], arg[1])
+    #add old data then restore back
+    print (path, args[0], args[1], args[2]) #這次總分 這次進球數
+    over("/update", args[0], 1, 1)
 
 def user_callback(path, tags, args, source):
     # which user will be determined by path:
@@ -156,6 +164,17 @@ def each_frame():
     # handle all pending requests then return
     while not server.timed_out:
         server.handle_request()
+
+def handler(socket,fortuple):
+    while True:
+        try:
+            data, addr = sock.recvfrom(1024)
+        except socket.error, e:
+            pass
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+#sock.bind(("0.0.0.0", 8756))
+#_thread.start_new_thread(handler,(sock,0))
 
 # simulate a "game engine"
 while run:
