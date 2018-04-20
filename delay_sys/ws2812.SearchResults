@@ -1,4 +1,10 @@
----- GPIO_Pin_2 Matches (3 in 2 files) ----
-Stm32f10x_gpio.h (libraries\stm32f10x_stdperiph_driver\inc):#define GPIO_Pin_2                 ((uint16_t)0x0004)  /*!< Pin 2 selected */
-Stm32f10x_gpio.h (libraries\stm32f10x_stdperiph_driver\inc):                              ((PIN) == GPIO_Pin_2) || \
-Vars.h (user):#define GPIO_YELLOW_2_2             GPIO_Pin_2
+---- LED_BUFFER_SIZE Matches (9 in 4 files) ----
+Config.c (user):110:    DMA_InitStruct.DMA_BufferSize = LED_BUFFER_SIZE;                                    // Specifies the buffer size
+Config.c (user):127:    DMA_InitStruct.DMA_BufferSize = LED_BUFFER_SIZE;                                    // Specifies the buffer size
+Main.c (user):215:    DMA_SetCurrDataCounter(DMA1_Channel1, LED_BUFFER_SIZE);             // Load number of bytes to be transferred
+Main.c (user):216:    DMA_SetCurrDataCounter(DMA1_Channel7, LED_BUFFER_SIZE);             // Load number of bytes to be transferred
+Vars.c (user):5:uint16_t ledBuff[LED_BUFFER_SIZE];      //Array of data to be sent to leds.
+Vars.c (user):10:char usartBuff[LED_BUFFER_SIZE+100];
+Vars.h (user):51:#define LED_BUFFER_SIZE     24*LED_COUNT+42         // Buffer size needs to be the number of LEDs times 24 bits plus 42 trailing bit to signify the end of the data being transmitted.
+Vars.h (user):55:extern uint16_t ledBuff[LED_BUFFER_SIZE];           //Array of data to be sent to leds.
+Vars.h (user):60:extern char usartBuff[LED_BUFFER_SIZE+100];         // Debugging buffer

@@ -219,6 +219,14 @@ void send_data(uint8_t *led_Colors, uint16_t len) {
     TIM_Cmd(TIM2, DISABLE);                                             // Disable Timer 2
     DMA_Cmd(DMA1_Channel1, DISABLE);                                    // Disable DMA channel 1
     DMA_ClearFlag(DMA1_FLAG_TC1);                                       // Clear DMA1 Channel 1 transfer complete flag
+
+	DMA_SetCurrDataCounter(DMA1_Channel7, LED_BUFFER_SIZE);             // Load number of bytes to be transferred
+    DMA_Cmd(DMA1_Channel7, ENABLE);                                     // Enable DMA channel 1
+    TIM_Cmd(TIM2, ENABLE);
+	while(!DMA_GetFlagStatus(DMA1_FLAG_TC7));                           // Wait until transfer complete
+    TIM_Cmd(TIM2, DISABLE);
+	DMA_Cmd(DMA1_Channel7, DISABLE);                                    // Disable DMA channel 1
+    DMA_ClearFlag(DMA1_FLAG_TC7);                                       // Clear DMA1 Channel 1 transfer complete flag
 }
 
 void rotaryUart(char * arg0, int16_t arg1) {
@@ -415,7 +423,7 @@ void calspeed(float *x, float *v, float a)
 }
 
 void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *direction, int16_t *idx, float *speed, uint8_t *lastleft, uint8_t *lastright) {
-    int16_t baseAngle = 270;
+    int16_t baseAngle = 192;
     uint8_t i, howmanyled=5, leftbool=0, rightbool=0;//, j;
     float x=0.0, divider = 110.0;
     int16_t retAngle=calAngle();
