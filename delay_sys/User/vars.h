@@ -4,7 +4,7 @@
 #define GPIO_BROWN_2_0              GPIO_Pin_0
 #define GPIO_ORANGE_2_1             GPIO_Pin_1
 #define GPIO_YELLOW_2_2             GPIO_Pin_2
-#define GPIO_GREEN_2_3              GPIO_Pin_0
+#define GPIO_GREEN_2_3              GPIO_Pin_13
 #define GPIO_BLUE_2_4               GPIO_Pin_4
 #define GPIO_BLUEWHITE_2_5          GPIO_Pin_5
 #define GPIO_GRAY_2_6               GPIO_Pin_6
@@ -17,7 +17,7 @@
 #define _2_0_read       	GPIO_ReadInputDataBit(GPIOA, GPIO_BROWN_2_0)/* GPIOB->IDR  & GPIO_Pin_6   */
 #define _2_1_read       	GPIO_ReadInputDataBit(GPIOA, GPIO_ORANGE_2_1)/*GPIOB->IDR  & GPIO_Pin_7	  */
 #define _2_2_read       	GPIO_ReadInputDataBit(GPIOB, GPIO_YELLOW_2_2)/* GPIOB->IDR  & GPIO_Pin_6   */
-#define _2_3_read       	GPIO_ReadInputDataBit(GPIOB, GPIO_GREEN_2_3)/*GPIOB->IDR  & GPIO_Pin_7	  */
+#define _2_3_read       	GPIO_ReadInputDataBit(GPIOC, GPIO_GREEN_2_3)/*GPIOB->IDR  & GPIO_Pin_7	  */
 #define _2_4_read       	GPIO_ReadInputDataBit(GPIOA, GPIO_BLUE_2_4)/* GPIOB->IDR  & GPIO_Pin_6   */
 #define _2_5_read       	GPIO_ReadInputDataBit(GPIOA, GPIO_BLUEWHITE_2_5)/*GPIOB->IDR  & GPIO_Pin_7	  */
 #define _2_6_read       	GPIO_ReadInputDataBit(GPIOA, GPIO_GRAY_2_6)/* GPIOB->IDR  & GPIO_Pin_6   */
@@ -26,7 +26,10 @@
 #define LEFT_ONOFF(x)      		(0==x?GPIO_WriteBit(GPIOB, GPIO_LEFT, Bit_RESET):GPIO_WriteBit(GPIOB, GPIO_LEFT, Bit_SET));
 #define RIGHT_ONOFF(x)      		(0==x?GPIO_WriteBit(GPIOB, GPIO_RIGHT, Bit_RESET):GPIO_WriteBit(GPIOB, GPIO_RIGHT, Bit_SET));
 
-#define GPIO_PWM_PIN                GPIO_Pin_2
+#define GPIO_PWM_PIN_2812_1         GPIO_Pin_0
+#define GPIO_PWM_PIN_2812_2         GPIO_Pin_1
+#define GPIO_PWM_PIN_2812_3         GPIO_Pin_2
+#define GPIO_PWM_PIN_2812_4         GPIO_Pin_3
 #define GPIO_USART_TX_PIN           GPIO_Pin_9
 #define GPIO_USART_RX_PIN           GPIO_Pin_10
 #define GPIO_ADC_PIN                GPIO_Pin_0

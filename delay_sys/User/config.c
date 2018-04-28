@@ -23,8 +23,9 @@ void Peripheral_Config() {
 
 void RCC_Config(void) {
     
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_USART1 , ENABLE);      // Enable clock for GPIOA and USART1
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_USART1 , ENABLE);      // Enable clock for GPIOA and USART1
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);                                // Enable clock for TIM2
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);                                // Enable clock for TIM2
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);                                  // Enable clock for DMA1
 }
 
@@ -32,10 +33,15 @@ void GPIO_Config(void) {
 
     GPIO_InitTypeDef GPIO_InitStruct;
 
-    GPIO_InitStruct.GPIO_Pin = GPIO_PWM_PIN | GPIO_Pin_3 | GPIO_USART_TX_PIN | GPIO_USART_RX_PIN;
+    GPIO_InitStruct.GPIO_Pin = GPIO_PWM_PIN_2812_3 | GPIO_PWM_PIN_2812_4 | GPIO_USART_TX_PIN | GPIO_USART_RX_PIN;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    GPIO_InitStruct.GPIO_Pin = GPIO_PWM_PIN_2812_1 | GPIO_PWM_PIN_2812_2;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     GPIO_InitStruct.GPIO_Pin = GPIO_BROWN_2_0 | GPIO_ORANGE_2_1   
                               | GPIO_BLUE_2_4  | GPIO_BLUEWHITE_2_5 | GPIO_GRAY_2_6   | GPIO_GRAYWHITE_2_7;
@@ -44,10 +50,15 @@ void GPIO_Config(void) {
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    GPIO_InitStruct.GPIO_Pin = GPIO_YELLOW_2_2 | GPIO_GREEN_2_3;
+    GPIO_InitStruct.GPIO_Pin = GPIO_YELLOW_2_2;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPD;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    GPIO_InitStruct.GPIO_Pin = GPIO_GREEN_2_3;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPD;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOC, &GPIO_InitStruct);
 
     GPIO_InitStruct.GPIO_Pin = GPIO_LEFT | GPIO_RIGHT;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
@@ -76,7 +87,6 @@ void TIM_Config(void) {
     TIM_OCInitTypeDef  TIM_OCInitStruct;
 
     uint16_t PrescalerValue = (uint16_t)(72000000 / 24000000) - 1;          // PrescalerValue = 2, Clock is scaled down to 72MHz /(PrescalerValue + 1) = 762MHz/3 = 24MHz
-
 		
     /* PWM Time base configuration */
     TIM_TimeBaseStruct.TIM_Period = PWM_TIM_PERIOD;                         // Species the period value
@@ -84,18 +94,22 @@ void TIM_Config(void) {
     TIM_TimeBaseStruct.TIM_ClockDivision = 0;                               // Specifies the clock division.
     TIM_TimeBaseStruct.TIM_CounterMode = TIM_CounterMode_Up;                //
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStruct);
-
+    TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStruct);
     /* PWM1 Mode configuration: Channel1 */
     TIM_OCInitStruct.TIM_OCMode = TIM_OCMode_PWM1;                          // Specifies the TIM mode.
     TIM_OCInitStruct.TIM_OutputState = TIM_OutputState_Enable;              //
     TIM_OCInitStruct.TIM_Pulse = 0;
     TIM_OCInitStruct.TIM_OCPolarity = TIM_OCPolarity_High;
     TIM_OC3Init(TIM2, &TIM_OCInitStruct);
-	TIM_OC4Init(TIM2, &TIM_OCInitStruct);
-    TIM_Cmd(TIM2, ENABLE);
-    
+    TIM_OC4Init(TIM2, &TIM_OCInitStruct);
+    TIM_OC3Init(TIM3, &TIM_OCInitStruct);
+    TIM_OC4Init(TIM3, &TIM_OCInitStruct);
+    //TIM_Cmd(TIM2, ENABLE);
+    //TIM_Cmd(TIM3, ENABLE);
     TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Enable);
-	TIM_OC4PreloadConfig(TIM2, TIM_OCPreload_Enable);
+    TIM_OC4PreloadConfig(TIM2, TIM_OCPreload_Enable);
+    TIM_OC3PreloadConfig(TIM3, TIM_OCPreload_Enable);
+    TIM_OC4PreloadConfig(TIM3, TIM_OCPreload_Enable);
 }
 
 void DMA_Config(void) {
@@ -119,7 +133,7 @@ void DMA_Config(void) {
     DMA_Init(DMA1_Channel1, &DMA_InitStruct);                                           // Initialize DAM1 Channel 1 to values specified in the DMA_InitStruct structure.
     TIM_DMACmd(TIM2, TIM_DMA_CC3, ENABLE);                                              // Enables TIM2's DMA request. TIM_DMA_CC1 : TIM Capture Compare 1 DMA source 
 
-	DMA_DeInit(DMA1_Channel7);                                                          // Deinitialize DAM1 Channel 1 to their default reset values.
+    DMA_DeInit(DMA1_Channel7);                                                          // Deinitialize DAM1 Channel 1 to their default reset values.
     
     DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t)&TIM2->CCR4;                      // Specifies Physical address of the peripheral in this case Timer 2 CCR1
     DMA_InitStruct.DMA_MemoryBaseAddr = (uint32_t)&ledBuff;                             // Specifies the buffer memory address
@@ -135,5 +149,39 @@ void DMA_Config(void) {
     
     DMA_Init(DMA1_Channel7, &DMA_InitStruct);                                           // Initialize DAM1 Channel 1 to values specified in the DMA_InitStruct structure.
     TIM_DMACmd(TIM2, TIM_DMA_CC4, ENABLE);                                              // Enables TIM2's DMA request. TIM_DMA_CC1 : TIM Capture Compare 1 DMA source
+    
+    DMA_DeInit(DMA1_Channel2);                                                          // Deinitialize DAM1 Channel 1 to their default reset values.
+    
+    DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t)&TIM3->CCR3;                      // Specifies Physical address of the peripheral in this case Timer 2 CCR1
+    DMA_InitStruct.DMA_MemoryBaseAddr = (uint32_t)&ledBuff;                             // Specifies the buffer memory address
+    DMA_InitStruct.DMA_DIR = DMA_DIR_PeripheralDST;                                     // Data transfered from memory to peripheral
+    DMA_InitStruct.DMA_BufferSize = LED_BUFFER_SIZE;                                    // Specifies the buffer size
+    DMA_InitStruct.DMA_PeripheralInc = DMA_PeripheralInc_Disable;                       // Do not incrament the peripheral address
+    DMA_InitStruct.DMA_MemoryInc = DMA_MemoryInc_Enable;                                // Incrament the buffer index
+    DMA_InitStruct.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;            // Specifies the peripheral data width
+    DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;                    // Specifies the memory data width
+    DMA_InitStruct.DMA_Mode = DMA_Mode_Normal;                                          // Specifies the operation mode. Normal or Circular
+    DMA_InitStruct.DMA_Priority = DMA_Priority_High;                                    // Specifies the software priority
+    DMA_InitStruct.DMA_M2M = DMA_M2M_Disable;                                           //
+    
+    DMA_Init(DMA1_Channel2, &DMA_InitStruct);                                           // Initialize DAM1 Channel 1 to values specified in the DMA_InitStruct structure.
+    TIM_DMACmd(TIM3, TIM_DMA_CC3, ENABLE);                                              // Enables TIM2's DMA request. TIM_DMA_CC1 : TIM Capture Compare 1 DMA source
+
+    DMA_DeInit(DMA1_Channel3);                                                          // Deinitialize DAM1 Channel 1 to their default reset values.
+    
+    DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t)&TIM3->CCR4;                      // Specifies Physical address of the peripheral in this case Timer 2 CCR1
+    DMA_InitStruct.DMA_MemoryBaseAddr = (uint32_t)&ledBuff;                             // Specifies the buffer memory address
+    DMA_InitStruct.DMA_DIR = DMA_DIR_PeripheralDST;                                     // Data transfered from memory to peripheral
+    DMA_InitStruct.DMA_BufferSize = LED_BUFFER_SIZE;                                    // Specifies the buffer size
+    DMA_InitStruct.DMA_PeripheralInc = DMA_PeripheralInc_Disable;                       // Do not incrament the peripheral address
+    DMA_InitStruct.DMA_MemoryInc = DMA_MemoryInc_Enable;                                // Incrament the buffer index
+    DMA_InitStruct.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;            // Specifies the peripheral data width
+    DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;                    // Specifies the memory data width
+    DMA_InitStruct.DMA_Mode = DMA_Mode_Normal;                                          // Specifies the operation mode. Normal or Circular
+    DMA_InitStruct.DMA_Priority = DMA_Priority_High;                                    // Specifies the software priority
+    DMA_InitStruct.DMA_M2M = DMA_M2M_Disable;                                           //
+    
+    DMA_Init(DMA1_Channel3, &DMA_InitStruct);                                           // Initialize DAM1 Channel 1 to values specified in the DMA_InitStruct structure.
+    TIM_DMACmd(TIM3, TIM_DMA_CC4, ENABLE);                                              // Enables TIM2's DMA request. TIM_DMA_CC1 : TIM Capture Compare 1 DMA source
 }
 

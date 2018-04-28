@@ -211,7 +211,7 @@ void send_data(uint8_t *led_Colors, uint16_t len) {
     while(memaddr < buffersize) {
         ledBuff[memaddr++] = 0;
     }
-
+    
     DMA_SetCurrDataCounter(DMA1_Channel1, LED_BUFFER_SIZE);             // Load number of bytes to be transferred
     DMA_Cmd(DMA1_Channel1, ENABLE);                                     // Enable DMA channel 1
     TIM_Cmd(TIM2, ENABLE);                                              // Enable Timer 2
@@ -220,13 +220,29 @@ void send_data(uint8_t *led_Colors, uint16_t len) {
     DMA_Cmd(DMA1_Channel1, DISABLE);                                    // Disable DMA channel 1
     DMA_ClearFlag(DMA1_FLAG_TC1);                                       // Clear DMA1 Channel 1 transfer complete flag
 
-	DMA_SetCurrDataCounter(DMA1_Channel7, LED_BUFFER_SIZE);             // Load number of bytes to be transferred
+    DMA_SetCurrDataCounter(DMA1_Channel7, LED_BUFFER_SIZE);             // Load number of bytes to be transferred
     DMA_Cmd(DMA1_Channel7, ENABLE);                                     // Enable DMA channel 1
     TIM_Cmd(TIM2, ENABLE);
-	while(!DMA_GetFlagStatus(DMA1_FLAG_TC7));                           // Wait until transfer complete
+    while(!DMA_GetFlagStatus(DMA1_FLAG_TC7));                           // Wait until transfer complete
     TIM_Cmd(TIM2, DISABLE);
-	DMA_Cmd(DMA1_Channel7, DISABLE);                                    // Disable DMA channel 1
+    DMA_Cmd(DMA1_Channel7, DISABLE);                                    // Disable DMA channel 1
     DMA_ClearFlag(DMA1_FLAG_TC7);                                       // Clear DMA1 Channel 1 transfer complete flag
+    
+    DMA_SetCurrDataCounter(DMA1_Channel2, LED_BUFFER_SIZE);             // Load number of bytes to be transferred
+    DMA_Cmd(DMA1_Channel2, ENABLE);                                     // Enable DMA channel 1
+    TIM_Cmd(TIM3, ENABLE);
+    while(!DMA_GetFlagStatus(DMA1_FLAG_TC2));                           // Wait until transfer complete
+    TIM_Cmd(TIM3, DISABLE);
+    DMA_Cmd(DMA1_Channel2, DISABLE);                                    // Disable DMA channel 1
+    DMA_ClearFlag(DMA1_FLAG_TC2);                                       // Clear DMA1 Channel 1 transfer complete flag
+
+    DMA_SetCurrDataCounter(DMA1_Channel3, LED_BUFFER_SIZE);             // Load number of bytes to be transferred
+    DMA_Cmd(DMA1_Channel3, ENABLE);                                     // Enable DMA channel 1
+    TIM_Cmd(TIM3, ENABLE);
+    while(!DMA_GetFlagStatus(DMA1_FLAG_TC3));                           // Wait until transfer complete
+    TIM_Cmd(TIM3, DISABLE);
+    DMA_Cmd(DMA1_Channel3, DISABLE);                                    // Disable DMA channel 1
+    DMA_ClearFlag(DMA1_FLAG_TC3);                                       // Clear DMA1 Channel 1 transfer complete flag
 }
 
 void rotaryUart(char * arg0, int16_t arg1) {
@@ -423,91 +439,91 @@ void calspeed(float *x, float *v, float a)
 }
 
 void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *direction, int16_t *idx, float *speed, uint8_t *lastleft, uint8_t *lastright) {
-    int16_t baseAngle = 192;
+    int16_t baseAngle = 309;
     uint8_t i, howmanyled=5, leftbool=0, rightbool=0;//, j;
     float x=0.0, divider = 110.0;
     int16_t retAngle=calAngle();
     //uint16_t idx= (COLUMBS-howmanyled)*retAngle/360;
     int16_t whichone;
-    if (retAngle >= baseAngle-5 && retAngle <= baseAngle)
+    if (retAngle >= baseAngle-2 && retAngle <= baseAngle)
     {
         (*speed) = -0.9;
         whichone = 0;
     }
-    else if(retAngle <= baseAngle+5 && retAngle >= baseAngle)
+    else if(retAngle <= baseAngle+2 && retAngle >= baseAngle)
     {
         (*speed) = 0.9;
         whichone = 0;
-    }
-    else if (retAngle >= baseAngle+6 && retAngle <= baseAngle+11)
+    }/*
+    else if (retAngle >= baseAngle+3 && retAngle <= baseAngle+5)
     {
         whichone = 1;
-    }
-    else if(retAngle >= baseAngle+12 && retAngle <= baseAngle+17)
+    }*/
+    else if(retAngle >= baseAngle+6 && retAngle <= baseAngle+8)
     {
         whichone = 2;
     }
-    else if(retAngle >= baseAngle+18 && retAngle <= baseAngle+23)
+    else if(retAngle >= baseAngle+9 && retAngle <= baseAngle+11)
     {
         whichone = 3;
     }
-    else if(retAngle >= baseAngle+24 && retAngle <= baseAngle+29)
+    else if(retAngle >= baseAngle+12 && retAngle <= baseAngle+14)
     {
         whichone = 4;
     }
-    else if(retAngle >= baseAngle+30 && retAngle <= baseAngle+36)
+    else if(retAngle >= baseAngle+15 && retAngle <= baseAngle+18)
     {
         whichone = 5;
     }
-    else if(retAngle >= baseAngle+37 && retAngle <= baseAngle+44)
+    else if(retAngle >= baseAngle+19 && retAngle <= baseAngle+22)
     {
         whichone = 6;
     }
-    else if(retAngle >= baseAngle+45 && retAngle <= baseAngle+53)
+    else if(retAngle >= baseAngle+23 && retAngle <= baseAngle+26)
     {
         whichone = 7;
     }
-    else if(retAngle >= baseAngle+54 && retAngle <= baseAngle+75)
+    else if(retAngle >= baseAngle+27 && retAngle <= baseAngle+37)
     {
         whichone = 8;
     }
-    else if(retAngle >= baseAngle+76 && retAngle <= baseAngle+89)
+    else if(retAngle >= baseAngle+38 && retAngle <= baseAngle+89)
     {
         whichone = 9;
     }
-    else if (retAngle <= baseAngle-6 && retAngle >= baseAngle-11)
+    else if (retAngle <= baseAngle-3 && retAngle >= baseAngle-5)
     {
         whichone = -1;
     }
-    else if(retAngle <= baseAngle-12 && retAngle >= baseAngle-17)
+    else if(retAngle <= baseAngle-6 && retAngle >= baseAngle-8)
     {
         whichone = -2;
     }
-    else if(retAngle <= baseAngle-18 && retAngle >= baseAngle-23)
+    else if(retAngle <= baseAngle-9 && retAngle >= baseAngle-11)
     {
         whichone = -3;
     }
-    else if(retAngle <= baseAngle-24 && retAngle >= baseAngle-29)
+    else if(retAngle <= baseAngle-12 && retAngle >= baseAngle-14)
     {
         whichone = -4;
     }
-    else if(retAngle <= baseAngle-30 && retAngle >= baseAngle-36)
+    else if(retAngle <= baseAngle-15 && retAngle >= baseAngle-18)
     {
         whichone = -5;
     }
-    else if(retAngle <= baseAngle-37 && retAngle >= baseAngle-44)
+    else if(retAngle <= baseAngle-19 && retAngle >= baseAngle-22)
     {
         whichone = -6;
     }
-    else if(retAngle <= baseAngle-45 && retAngle >= baseAngle-53)
+    else if(retAngle <= baseAngle-23 && retAngle >= baseAngle-26)
     {
         whichone = -7;
     }
-    else if(retAngle <= baseAngle-54 && retAngle >= baseAngle-75)
+    else if(retAngle <= baseAngle-27 && retAngle >= baseAngle-37)
     {
         whichone = -8;
     }
-    else if(retAngle <= baseAngle-76 && retAngle >= baseAngle-89)
+    else if(retAngle <= baseAngle-38 && retAngle >= baseAngle-89)
     {
         whichone = -9;
     }
@@ -569,8 +585,8 @@ void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *d
         }
     }
     rotaryUart("1.", retAngle);
-    leftbool = ( (baseAngle-retAngle) > 30 );
-    rightbool = ( (retAngle-baseAngle) > 30 ); 
+    leftbool = ( (baseAngle-retAngle) > 25 );
+    rightbool = ( (retAngle-baseAngle) > 25 ); 
     if(leftbool != (*lastleft) )
     {
         LEFT_ONOFF(leftbool);
