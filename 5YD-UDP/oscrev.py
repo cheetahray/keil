@@ -180,7 +180,7 @@ def ID_callback(path, tags, args, source):
     global NowMode
     print (path, args[0])
     #now = datetime.datetime.now()
-    if 100 != NowMode and now.minute % 30 >= 24 :
+    if 100 != NowMode and now.minute % 60 >= 54 :
         over ("/error", "d", "d", "d")
     else:    
         value = crm("PlayGames", {"VIPCODE": args[0]})
@@ -264,6 +264,7 @@ def scene_callback(path, tags, args, source):
         NowMode = 100
     else:
         NowMode = args[0]
+    print NowMode
     oscmsg = OSCMessage()
     oscmsg.setAddress(path)
     oscmsg.append(args[0])
@@ -295,7 +296,7 @@ def handler(socket,fortuple):
             data, addr = sock.recvfrom(1024)
         except socket.error, e:
             pass
-special = {29:122, 34:119, 35:115, 40:154, 41:129, 46:118, 52:132, 53:123}
+special = {29:122, 34:119, 35:115, 40:148, 41:127, 46:114, 52:127, 53:122}
 specialII = {30:122, 45:161, 85:136}
 G_SCO = 0
 G_BALLS = 0
@@ -311,7 +312,7 @@ while True:
     now = datetime.datetime.now()
     if now.hour >= 9 and now.hour < 22:
         each_frame()
-    elif now.minute == 0:
+    elif now.minute < 5:
         for ii in range (1,25):
             motor("/motor", ii, 0, 0, 0)
             sleep(0.5)
