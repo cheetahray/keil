@@ -12,7 +12,7 @@
 #define GPIO_BROWNWHITE_DIRECTION   GPIO_Pin_8
 //#define ROTARY_ENCODER_ANGLE       GPIOA
 #define GPIO_LEFT                   GPIO_Pin_10
-#define GPIO_RIGHT                  GPIO_Pin_11
+#define GPIO_RIGHT                  GPIO_Pin_12
 
 #define _2_0_read       	GPIO_ReadInputDataBit(GPIOA, GPIO_BROWN_2_0)/* GPIOB->IDR  & GPIO_Pin_6   */
 #define _2_1_read       	GPIO_ReadInputDataBit(GPIOA, GPIO_ORANGE_2_1)/*GPIOB->IDR  & GPIO_Pin_7	  */

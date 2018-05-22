@@ -149,7 +149,7 @@ void DMA_Config(void) {
     
     DMA_Init(DMA1_Channel7, &DMA_InitStruct);                                           // Initialize DAM1 Channel 1 to values specified in the DMA_InitStruct structure.
     TIM_DMACmd(TIM2, TIM_DMA_CC4, ENABLE);                                              // Enables TIM2's DMA request. TIM_DMA_CC1 : TIM Capture Compare 1 DMA source
-    
+        
     DMA_DeInit(DMA1_Channel2);                                                          // Deinitialize DAM1 Channel 1 to their default reset values.
     
     DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t)&TIM3->CCR3;                      // Specifies Physical address of the peripheral in this case Timer 2 CCR1

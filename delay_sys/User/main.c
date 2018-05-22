@@ -280,7 +280,7 @@ int16_t calAngle() {
     retAngle = _2_0_read + (_2_1_read << 1) + (_2_2_read << 2) + (_2_3_read << 3) + (_2_4_read << 4)
                + (_2_5_read << 5) + (_2_6_read << 6) + (_2_7_read << 7);
     retAngle = ( ( retAngle * 45 ) >> 5 ) ;
-    return retAngle;
+	  return retAngle;
 }
 
 void test_LED(float r, float g, float b) {
@@ -439,12 +439,16 @@ void calspeed(float *x, float *v, float a)
 }
 
 void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *direction, int16_t *idx, float *speed, uint8_t *lastleft, uint8_t *lastright) {
-    int16_t baseAngle = 309;
+    int16_t baseAngle = 146;
     uint8_t i, howmanyled=5, leftbool=0, rightbool=0;//, j;
     float x=0.0, divider = 110.0;
     int16_t retAngle=calAngle();
     //uint16_t idx= (COLUMBS-howmanyled)*retAngle/360;
     int16_t whichone;
+    if (retAngle > baseAngle)
+        retAngle = baseAngle - ( retAngle - baseAngle );
+    else
+        retAngle = baseAngle + ( baseAngle - retAngle );
     if (retAngle >= baseAngle-2 && retAngle <= baseAngle)
     {
         (*speed) = -0.9;
