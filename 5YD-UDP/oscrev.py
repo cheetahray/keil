@@ -57,11 +57,11 @@ ll.connect(('127.0.0.1', 7111))   # localhost, port 57120
 
 def whiteglove(arg0, oscmsg):
     global ee,ff,gg,hh
-    if 1 <= arg0 and arg0 <= 6:
+    if 3 != arg0 and 1 <= arg0 and arg0 <= 6:
         ee.send(oscmsg)
-    elif 7 <= arg0 and arg0 <= 12:
+    elif 7 <= arg0 and arg0 <= 9:
         ff.send(oscmsg)
-    elif 13 <= arg0 and arg0 <= 18: # and arg0 != 17:
+    elif 14 != arg0 and 13 <= arg0 and arg0 <= 18:
         gg.send(oscmsg)
     elif 19 <= arg0 and arg0 <= 24:
         hh.send(oscmsg)
@@ -138,17 +138,17 @@ def hit_callback(path, tags, args, source):
         args0 = args[0]-1
         args1 = args[1] * 10
         if args[0] > 86:
-            print (path, args[0], args[1])
+            pass #print (path, args[0], args[1])
         elif XY[args0][1][1] == -180:
-            print (path, args[0], args[1])
+            pass #print (path, args[0], args[1])
             click (path, XY[args0][0], bigTop - (bigLen * args1 / bigReal ))
         elif XY[args0][1][1] == -160:
             if False == specialII.has_key(args[0]) or args[1] < specialII.get(args[0]) :
-                print (path, args[0], args[1])
+                pass #print (path, args[0], args[1])
                 click (path, XY[args0][0], midTop - (midLen * args1 / midReal )) 
         elif XY[args0][1][1] == -100: 
             if False == special.has_key(args[0]) or args[1] < special.get(args[0]) :
-                print (path, args[0], args[1])
+                pass #print (path, args[0], args[1])
                 click (path, XY[args0][0], smallTop - (smallLen * args1 / smallReal ))
         touchmode[args0] = TOUCHDOWN
         threading.Timer(0.5, release, (args0,args0) ).start()
@@ -161,7 +161,7 @@ def get_callback(path, tags, args, source):
     # args is a OSCMessage with data
     # source is where the message came from (in case you need to reply)
     #/BallIn
-    print (path, args[0], args[1])
+    #print (path, args[0], args[1])
     click (path, args[0], ( ( 260 * int(args[1]) )  >> 7 ) - 100 )  #260 * Y / 128 - 100  
 
 def crm(url2, myDict):
@@ -180,12 +180,12 @@ def ID_callback(path, tags, args, source):
     global NowMode
     print (path, args[0])
     #now = datetime.datetime.now()
-    if 100 != NowMode and now.minute % 60 >= 54 :
+    if 100 != NowMode and now.minute % 30 >= 24 :
         over ("/error", "d", "d", "d")
     else:    
         value = crm("PlayGames", {"VIPCODE": args[0]})
         if value.get('Data') == "B":
-            print "Not member yet."   #如果此會員還沒註冊，回傳 /error 0or1or2...
+            print "Not member yet."   #如�?此�??��?沒註?��??�傳 /error 0or1or2...
             over ("/error", "b", "b", "b")
         elif value.get('Data') == "C":
             print "Just in your game."
@@ -222,7 +222,7 @@ def IDscore_callback(path, tags, args, source):
     #add old data then restore back
     global G_SCO, G_BALLS, L_TIMES#, TRANS_SCO
     retupdate = 0
-    print (path, args[0], args[1], args[2]) #這次總分 這次進球數
+    print (path, args[0], args[1], args[2]) #?�次總�? ?�次?��???
     UPDATE = {"trans":{"XF_VIPCODE":XF_VIPCODE[args[0]],"M_ID":args[0],"G_SCO":G_SCO+int(args[1]),"G_BALLS":G_BALLS+int(args[2]),"L_TIMES":int(L_TIMES)+1}}
     print UPDATE
     
@@ -232,7 +232,7 @@ def IDscore_callback(path, tags, args, source):
         if value.get('Data') == args[0]:
             retupdate = 1
 
-    over("/update", args[0], retupdate, retupdate) #如果上傳不成功，/update 0
+    over("/update", args[0], retupdate, retupdate) #如�?上傳不�??��?/update 0
 
 def user_callback(path, tags, args, source):
     # which user will be determined by path:
@@ -296,8 +296,8 @@ def handler(socket,fortuple):
             data, addr = sock.recvfrom(1024)
         except socket.error, e:
             pass
-special = {29:122, 34:119, 35:115, 40:148, 41:127, 46:114, 52:127, 53:122}
-specialII = {30:122, 45:161, 85:136}
+special = {29:122, 34:119, 35:115, 40:145, 41:127, 46:114, 52:127, 53:122}
+specialII = {30:122, 45:161, 57:168, 85:136}
 G_SCO = 0
 G_BALLS = 0
 #TRANS_SCO = 0
@@ -308,11 +308,23 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 #_thread.start_new_thread(handler,(sock,0))
 NowMode = 0
 now = datetime.datetime.now()
+close = datetime.datetime(now.year, now.month, now.day, 21, 5, 0)
+'''
+for ii in range (1,5):
+    motor("/motor", ii, 0, 0, 0)
+    sleep(0.5)
+for ii in range (9,13):
+    motor("/motor", ii, 0, 0, 0)
+    sleep(0.5)
+for ii in range (13,17):
+    motor("/motor", ii, 0, 0, 0)
+    sleep(0.5)
+'''            
 while True:
     now = datetime.datetime.now()
-    if now.hour >= 9 and now.hour < 22:
+    if now < close:           
         each_frame()
-    elif now.minute < 5:
+    else:
         for ii in range (1,25):
             motor("/motor", ii, 0, 0, 0)
             sleep(0.5)
