@@ -107,10 +107,10 @@ void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch, u8 * lastlight
 										   *watt = buff[packet_length+1];
 											 *changle = buff[packet_length+2];
 											 boolangle = (*changle < 250);
-											 if(*lastch == 127 && Vacc[2] != 3 && Vacc[3] != 2)
+											 if(*lastch == 127 && Vacc[2] != 2 && Vacc[3] != 2)
 											 {
 													Vacc[1] = *lastch;
-												  Vacc[2] = 3;
+												  Vacc[2] = 2;
 												  Vacc[3] = 2;
 													stepray = angle2step(*changle);
 											 }

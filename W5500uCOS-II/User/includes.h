@@ -28,7 +28,7 @@
 
 #ifndef  __INCLUDES_H__
 #define  __INCLUDES_H__
-#define STEPAROUND 800
+#define STEPAROUND 200
 #include  <stdio.h>
 #include  <string.h>
 #include  <ctype.h>
