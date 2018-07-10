@@ -34,7 +34,7 @@
 #include  <ctype.h>
 #include  <stdlib.h>
 #include  <stdarg.h>
-#define angle2step(changle)  ( ( (changle) << 4 ) / 5 ) //STEPAROUND
+#define angle2step(changle)  ( ( (changle) << 2 ) / 5 ) //STEPAROUND / 250
 #include  <ucos_ii.h>
 /*
 #include  <cpu.h>
