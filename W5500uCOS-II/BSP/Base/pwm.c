@@ -114,7 +114,7 @@ void CWCCW(u8 ch)
 	   TIM_OCInitTypeDef  TIM_OCInitStructure;
 	
 	   /* 基础设置*/
-	   TIM_TimeBaseStructure.TIM_Prescaler = 6-1; //此值+1为分频的除数，一次数0.5ms
+	   TIM_TimeBaseStructure.TIM_Prescaler = 8-1; //此值+1为分频的除数，一次数0.5ms
 	   if(ch > 127)
 		    TIM_TimeBaseStructure.TIM_Period = 65535/(ch-126)-1;	//计数值   
 		 else
