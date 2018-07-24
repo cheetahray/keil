@@ -128,11 +128,12 @@ void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch, u8 * lastlight
 					                {
 														 if(*lastchangle < *changle)
 														 {
+															  /*
 															  if (*ch < 130)
 																{
 																    Vacc[0] = 130;
 																}
-														    else if( angle2step((*changle)-(*lastchangle)) < (*ch-127) )
+														    else */if( angle2step((*changle)-(*lastchangle)) < (*ch-127) )
 																{
 																    Vacc[0] = angle2step((*changle)-(*lastchangle));
 																}
@@ -143,11 +144,12 @@ void loopback_artnet(SOCKET s, uint16 port, u8 * lastch, u8 * ch, u8 * lastlight
 														 }
 														 else
 														 {  
+															  /*
 															  if (*ch > 124)
 																{
 																    Vacc[0] = 124;
 																}
-														    else if( angle2step((*lastchangle)-(*changle)) < (127-*ch) )
+														    else */if( angle2step((*lastchangle)-(*changle)) < (127-*ch) )
 																{
 																    Vacc[0] = angle2step((*lastchangle)-(*changle));
 																}
