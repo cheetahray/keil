@@ -114,7 +114,7 @@ void CWCCW(u8 ch)
 	   TIM_OCInitTypeDef  TIM_OCInitStructure;
 	
 	   /* 基础设置*/
-	   TIM_TimeBaseStructure.TIM_Prescaler = 5-1; //此值+1为分频的除数，一次数0.5ms
+	   TIM_TimeBaseStructure.TIM_Prescaler = 6-1; //此值+1为分频的除数，一次数0.5ms
 	   if(ch > 127)
 		    TIM_TimeBaseStructure.TIM_Period = 65535/(ch-126)-1;	//计数值   
 		 else
@@ -166,8 +166,8 @@ void LIGHT(u8 ch)
 	OSIntNesting++;	  	  //中断嵌套标志
 	TIM_Cmd(TIM3, DISABLE); //使能定时器2
 	/* 基础设置*/
-	TIM_TimeBaseStructure.TIM_Period = 25600-1;	//计数值   
-	TIM_TimeBaseStructure.TIM_Prescaler = 10-1; //此值+1为分频的除数，一次数0.5ms
+	TIM_TimeBaseStructure.TIM_Period = 256-1;	//计数值   
+	TIM_TimeBaseStructure.TIM_Prescaler = 2-1; //此值+1为分频的除数，一次数0.5ms
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;  //采样分频
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;//向上计数
 	
@@ -177,7 +177,7 @@ void LIGHT(u8 ch)
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //比较输出使能
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;//TIM输出比较极性为正
 	/* 比较通道1配置*/
-	TIM_OCInitStructure.TIM_Pulse = ch*100 + 50;//通道1捕获比较值
+	TIM_OCInitStructure.TIM_Pulse = ch; //*100 + 50;//通道1捕获比较值
 	TIM_OC1Init(TIM3, &TIM_OCInitStructure);//根据TIM_OCInitStruct中指定的参数初始化TIM3
 	TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
 	
