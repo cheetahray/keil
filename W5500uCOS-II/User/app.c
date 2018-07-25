@@ -84,10 +84,7 @@ void Task_CWCCW(void *p_arg)
 						*(msg+1) = V0;
 						OSMboxPost(CWCCW_MBOX, msg); 	        //将接收到的数据通过消息邮箱传递给串口1接收解析任务   
 					}
-					else
-				  {
-					  hereray = angle2step(changle);
-					}
+					hereray = angle2step(changle);
 					OSTimeDly(t3 << 3);                    //half second
 				}
 				//OSTimeDly(1);                    //half second

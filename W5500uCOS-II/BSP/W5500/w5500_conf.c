@@ -26,9 +26,9 @@ EEPROM_MSG_STR EEPROM_MSG;															/*EEPROM存储信息结构体*/
 uint8 mac[6]={0x02,0x77,0x36,0x07,0x08,0x60};
 
 /*定义默认IP信息*/
-uint8 local_ip[4]={192,168,0,60};												/*定义W5500默认IP地址*/
+uint8 local_ip[4]={192,168,1,60};												/*定义W5500默认IP地址*/
 uint8 subnet[4]={255,255,255,0};												/*定义W5500默认子网掩码*/
-uint8 gateway[4]={192,168,0,254};													/*定义W5500默认网关*/
+uint8 gateway[4]={192,168,1,254};													/*定义W5500默认网关*/
 uint8 dns_server[4]={139,175,55,244};									/*定义W5500默认DNS*/
 
 uint8	ip_from;
