@@ -66,8 +66,8 @@ void TIM2_Config(void)
 	/* TIM2 clock enable */
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);//使能GPIOA时钟和复用功能时钟
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5; //TIM2二通道PWM波形输出端口PA1
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;//复用推挽输出
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3; //TIM2二通道PWM波形输出端口PA1
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;//复用推挽输出
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;//50MHz
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
@@ -107,51 +107,46 @@ void CWCCW(u8 ch)
 	 OS_ENTER_CRITICAL();  //保存全局中断标志,关总中断// Tell uC/OS-II that we are starting an ISR
 	 OSIntNesting++;	  	  //中断嵌套标志
 	 TIM_Cmd(TIM2,DISABLE);		
-   TIM_ITConfig(TIM2, TIM_IT_CC1 | TIM_IT_CC2 | TIM_IT_Update, DISABLE);
    if(ch != 127)
    {		 
 		 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	   TIM_OCInitTypeDef  TIM_OCInitStructure;
-	
 	   /* 基础设置*/
-	   TIM_TimeBaseStructure.TIM_Prescaler = 8-1; //此值+1为分频的除数，一次数0.5ms
+	   TIM_TimeBaseStructure.TIM_Prescaler = 2-1; //此值+1为分频的除数，一次数0.5ms
 	   if(ch > 127)
-		    TIM_TimeBaseStructure.TIM_Period = 65535/(ch-126)-1;	//计数值   
+		    TIM_TimeBaseStructure.TIM_Period = 3584/(ch-126)-1;	//计数值   
 		 else
-			  TIM_TimeBaseStructure.TIM_Period = 65535/(128-ch)-1;	//计数值   
+			  TIM_TimeBaseStructure.TIM_Period = 3584/(128-ch)-1;	//计数值   
 		 
 	   TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;  //采样分频
 	   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;//向上计数
 	
 	   TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);	
-		 
-	   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Inactive;//输出比较非主动模式
+	
+     TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;   	 
+	   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //输出比较非主动模式
   	 TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;//TIM输出比较极性为正
 		 TIM_OCInitStructure.TIM_Pulse = (TIM_TimeBaseStructure.TIM_Period >> 1);//通道1捕获比较值
 						
 		 if(ch > 127)
 		 {
 				/* 比较通道1配置*/
-			  TIM_OC1Init(TIM2, &TIM_OCInitStructure);//根据TIM_OCInitStruct中指定的参数初始化TIM2
-				TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Enable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
+			  TIM_OC3Init(TIM2, &TIM_OCInitStructure);//根据TIM_OCInitStruct中指定的参数初始化TIM2
+				TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Enable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
+			  TIM_OC4PreloadConfig(TIM2, TIM_OCPreload_Disable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
 		 }
 		 else
 		 {
 				/*比较通道2 */        
-			  TIM_OC2Init(TIM2, &TIM_OCInitStructure);//用指定的参数初始化TIM2 
-				TIM_OC2PreloadConfig(TIM2, TIM_OCPreload_Enable);
+			  TIM_OC4Init(TIM2, &TIM_OCInitStructure);//用指定的参数初始化TIM2 
+				TIM_OC4PreloadConfig(TIM2, TIM_OCPreload_Enable);
+			  TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Disable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
 	   }
 		 
 		 /*使能预装载*/
 	   TIM_ARRPreloadConfig(TIM2, ENABLE);	
-	   /*预先清除所有中断位*/
-	   TIM_ClearITPendingBit(TIM2, TIM_IT_CC1 | TIM_IT_CC2 | TIM_IT_Update); 
-
-	   /* 4个通道和溢出都配置中断*/
-	   TIM_ITConfig(TIM2, (ch>127?TIM_IT_CC1:TIM_IT_CC2) | TIM_IT_Update, ENABLE);
-	
+	   	
 	   TIM_Cmd(TIM2, ENABLE); //使能定时器2
-		 
 	 }	
    OS_EXIT_CRITICAL();  //保存全局中断标志,关总中断// Tell uC/OS-II that we are starting an ISR	 
 	 OSIntExit();

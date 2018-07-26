@@ -148,13 +148,13 @@ void NVIC_Config(void)
 	  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3; //副优先级设置为0
 	  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//中断使能
 	  NVIC_Init(&NVIC_InitStructure);//中断初始化
-    */
+
     NVIC_InitStructure.NVIC_IRQChannel =TIM2_IRQn;//TIM3中断
 	  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;//占先式优先级设置为1
 	  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2; //副优先级设置为0
 	  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//中断使能
 	  NVIC_Init(&NVIC_InitStructure);//中断初始化
-	  
+    */
 		Exti_Config();//初始化中断配置	
     Nvic_Config_Key();//初始化中断向量
   
