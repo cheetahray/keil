@@ -56,21 +56,25 @@ ll = OSCClient()
 ll.connect(('127.0.0.1', 7111))   # localhost, port 57120
 
 def whiteglove(arg0, oscmsg):
-    global ee,ff,gg,hh
-    if 3 != arg0 and 1 <= arg0 and arg0 <= 6:
+    global ee,ff,gg,hhf
+    if 1 <= arg0 and arg0 <= 6:
         ee.send(oscmsg)
-    elif 7 <= arg0 and arg0 <= 9:
+    elif 7 <= arg0 and arg0 <= 12:
         ff.send(oscmsg)
-    elif 14 != arg0 and 13 <= arg0 and arg0 <= 18:
+    elif 13 <= arg0 and arg0 <= 18:
         gg.send(oscmsg)
     elif 19 <= arg0 and arg0 <= 24:
         hh.send(oscmsg)
 
 def motor(msg,arg0,arg1,arg2,arg3):
+    global close
     oscmsg = OSCMessage()
     oscmsg.setAddress(msg)
     oscmsg.append(arg0)
-    oscmsg.append(arg1)
+    if datetime.datetime.now() < close:           
+        oscmsg.append(arg1)
+    else: 
+        oscmsg.append(0) 
     oscmsg.append(arg2)
     oscmsg.append(arg3)
     #print oscmsg
@@ -179,7 +183,7 @@ def ID_callback(path, tags, args, source):
     global G_SCO, G_BALLS, L_TIMES#, TRANS_SCO
     global NowMode
     print (path, args[0])
-    #now = datetime.datetime.now()
+    now = datetime.datetime.now()
     if 100 != NowMode and now.minute % 30 >= 24 :
         over ("/error", "d", "d", "d")
     else:    
@@ -296,8 +300,8 @@ def handler(socket,fortuple):
             data, addr = sock.recvfrom(1024)
         except socket.error, e:
             pass
-special = {29:122, 34:119, 35:115, 40:145, 41:127, 46:114, 52:127, 53:122}
-specialII = {30:122, 45:161, 57:168, 85:136}
+special = {29:122, 34:119, 35:114, 40:143, 41:127, 46:110, 52:127, 53:122}
+specialII = {30:15, 45:161, 57:168, 85:136}
 G_SCO = 0
 G_BALLS = 0
 #TRANS_SCO = 0
@@ -308,7 +312,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 #_thread.start_new_thread(handler,(sock,0))
 NowMode = 0
 now = datetime.datetime.now()
-close = datetime.datetime(now.year, now.month, now.day, 21, 5, 0)
+close = datetime.datetime(now.year, now.month, now.day, 21, 3, 0)
 '''
 for ii in range (1,5):
     motor("/motor", ii, 0, 0, 0)
@@ -321,14 +325,8 @@ for ii in range (13,17):
     sleep(0.5)
 '''            
 while True:
-    now = datetime.datetime.now()
-    if now < close:           
-        each_frame()
-    else:
-        for ii in range (1,25):
-            motor("/motor", ii, 0, 0, 0)
-            sleep(0.5)
-
+    each_frame()
+    
 for next in range(len(XY), len(XY)):
     click ("/Hit", XY[next][0], 180)
     time.sleep(2)
