@@ -19,37 +19,42 @@
   * @param  无
   * @retval 无
   */
-void TIM2_PWM_Init(void)
-{	
-	GPIO_InitTypeDef         GPIO_InitStructure;
-	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-	TIM_OCInitTypeDef        TIM_OCInitStructure;
+void TIM1_Config()
+{
+    TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+    NVIC_InitTypeDef NVIC_InitStructure; 
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);	//使能TIM2时钟，GPIOA时钟
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);//使能GPIOA时钟和复用功能时钟
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1; //TIM2二通道PWM波形输出端口PA1
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;//复用推挽输出
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;//50MHz
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-//定时器定时时间T计算公式：T=(TIM_Period+1)*(TIM_Prescaler+1)/TIMxCLK=(3600*10/72M)s=0.0005s，即2K频率
-	TIM_TimeBaseStructure.TIM_Period = 3600-1;//自动重装载值，取值必须在0x0000~0xFFFF之间
-	TIM_TimeBaseStructure.TIM_Prescaler =10-1;//预分频值，+1为分频系数，取值必须在0x0000~0xFFFF之间							 
-	TIM_TimeBaseStructure.TIM_ClockDivision = 0; 				//时钟分割
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;	//向上计数模式	 
-	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);//根据TIM_TimeBaseInitStruct中指定的参数初始化TIMx的时间基数单位 
+    TIM_TimeBaseStructure.TIM_Period = 65535-1;   
+    TIM_TimeBaseStructure.TIM_Prescaler = 1-1;    
+    TIM_TimeBaseStructure.TIM_ClockDivision = 0;     
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  
+    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+    TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);  
 
-	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;             //TIM脉冲宽度调制模式1
-	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //比较输出使能
-	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;     //输出极性:TIM输出比较极性高
-		
-	//蜂鸣器控制  
-	TIM_OCInitStructure.TIM_Pulse = 900;               //设置待装入捕获比较寄存器的脉冲值,取值必须在0x0000~0xFFFF之间，占空比900/3600
-	TIM_OC2Init(TIM2, &TIM_OCInitStructure);          //根据TIM_OCInitStruct中指定的参数初始化外设TIMx
-	TIM_OC2PreloadConfig(TIM2, TIM_OCPreload_Enable); //使能TIMx在CCR2上的预装载寄存器
+    TIM_SelectInputTrigger(TIM1, TIM_TS_ITR1);
+    //TIM_InternalClockConfig(TIM3);
+    TIM1->SMCR|=0x07;                                  //设置从模式寄存器 
+    //TIM_ITRxExternalClockConfig(TIM2, TIM_TS_ITR0);
+
+    //TIM_ARRPreloadConfig(TIM3, ENABLE);         
+    TIM_ClearFlag(TIM1, TIM_FLAG_Update);//清中断标志位
+ 
+    TIM_ITConfig(      //使能或者失能指定的TIM中断
+        TIM1,            //TIM1
+        TIM_IT_Update  | //TIM 更新中断源
+        TIM_IT_Trigger,  //TIM 触发中断源 
+        ENABLE  	     //使能
+    );
 	
-	TIM_ARRPreloadConfig(TIM2, ENABLE);               //使能TIMx在ARR上的预装载寄存器                     
-	TIM_Cmd(TIM2, DISABLE);	//禁止TIM2使能
-  //TIM_Cmd(TIM2, ENABLE);//使能定时器	
+    //设置优先级
+    NVIC_InitStructure.NVIC_IRQChannel = TIM1_UP_IRQn;  
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;//先占优先级0级
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;  	   //从优先级0级
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure); 
+	
+		TIM_Cmd(TIM1, ENABLE);
 }
 
 /**********************************************************
@@ -112,15 +117,15 @@ void CWCCW(u8 ch)
 		 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	   TIM_OCInitTypeDef  TIM_OCInitStructure;
 	   /* 基础设置*/
-	   TIM_TimeBaseStructure.TIM_Prescaler = 2-1; //此值+1为分频的除数，一次数0.5ms
+	   TIM_TimeBaseStructure.TIM_Prescaler = 1-1; //此值+1为分频的除数，一次数0.5ms
 	   if(ch > 127)
-		    TIM_TimeBaseStructure.TIM_Period = 3584/(ch-126)-1;	//计数值   
+		    TIM_TimeBaseStructure.TIM_Period = 4096/(ch-126)-1;	//计数值   
 		 else
-			  TIM_TimeBaseStructure.TIM_Period = 3584/(128-ch)-1;	//计数值   
+			  TIM_TimeBaseStructure.TIM_Period = 4096/(128-ch)-1;	//计数值   
 		 
 	   TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;  //采样分频
 	   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;//向上计数
-	
+     //TIM_TimeBaseStructure.TIM_RepetitionCounter=0;	
 	   TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);	
 	
      TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;   	 
@@ -132,7 +137,7 @@ void CWCCW(u8 ch)
 		 {
 				/* 比较通道1配置*/
 			  TIM_OC3Init(TIM2, &TIM_OCInitStructure);//根据TIM_OCInitStruct中指定的参数初始化TIM2
-				TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Enable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
+			  TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Enable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
 			  TIM_OC4PreloadConfig(TIM2, TIM_OCPreload_Disable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
 		 }
 		 else
@@ -143,6 +148,9 @@ void CWCCW(u8 ch)
 			  TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Disable);//禁止OC1重装载,其实可以省掉这句,因为默认是4路都不重装的.
 	   }
 		 
+		 TIM_SelectMasterSlaveMode(TIM2, TIM_MasterSlaveMode_Enable);
+     TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);
+				
 		 /*使能预装载*/
 	   TIM_ARRPreloadConfig(TIM2, ENABLE);	
 	   	

@@ -104,15 +104,18 @@ void EXTI9_5_IRQHandler(void)
     /*清除EXTI线路挂起位*/
 		unsigned char * msg;
 	  int msgsize = 3;  	
-		
+		TIM_SetCounter(TIM1,0);
+		TIM_ClearFlag(TIM1, TIM_FLAG_Update);
+		TIM_SetCounter(TIM2, 0);
+		TIM_ClearFlag(TIM2, TIM_FLAG_Update);
 		msgsize *= sizeof(char);
 		msg = malloc(msgsize);
     memcpy(msg,"Fa",msgsize);
     OSMboxPost(Com1_MBOX,msg); 	        //将接收到的数据通过消息邮箱传递给串口1接收解析任务   
 		stepray = 0;
     EXTI_ClearITPendingBit(KEY3_BUTTON_EXTI_LINE); 
-  /*D3状态翻转*/
-   //LEDXToggle(LED3);
+		/*D3状态翻转*/
+    //LEDXToggle(LED3);
   }
   OSIntExit();  //在os_core.c文件里定义,如果有更高优先级的任务就绪了,则执行一次任务切换  	
 }

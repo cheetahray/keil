@@ -123,7 +123,10 @@ void Task_Com1(void *p_arg) {
                 }
             }
         }
-				OSTimeDly(1);
+				stepray &= 0xFFFF0000;  
+				stepray += TIM_GetCounter(TIM1);
+				printf("%d\t", stepray);
+				OSTimeDly(10);
     }
 }
 /**********************************************************
@@ -173,6 +176,7 @@ int main()
     USART1_Config();
     USART_DMAToBuf1();//串口DMA配置
     //TIM2_PWM_Init();//初始化通用定时器TIM2
+	  TIM1_Config();
     TIM2_Config();
     TIM3_Config();
     OS_CPU_SysTickInit();    //initialze the system clock
