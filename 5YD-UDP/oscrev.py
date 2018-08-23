@@ -56,15 +56,20 @@ ll = OSCClient()
 ll.connect(('127.0.0.1', 7111))   # localhost, port 57120
 
 def whiteglove(arg0, oscmsg):
-    global ee,ff,gg,hhf
-    if 1 <= arg0 and arg0 <= 6:
-        ee.send(oscmsg)
-    elif 7 <= arg0 and arg0 <= 12:
-        ff.send(oscmsg)
-    elif 13 <= arg0 and arg0 <= 18:
-        gg.send(oscmsg)
-    elif 19 <= arg0 and arg0 <= 24:
-        hh.send(oscmsg)
+    global ee,ff,gg,hh
+    wrong = []#5,7,9,13,15,22]        
+    try:
+        if wrong.index(arg0) >= 0:
+            pass
+    except ValueError:
+        if 1 <= arg0 and arg0 <= 6:
+            ee.send(oscmsg)
+        elif 7 <= arg0 and arg0 <= 12:
+            ff.send(oscmsg)
+        elif 13 <= arg0 and arg0 <= 18:
+            gg.send(oscmsg)
+        elif 19 <= arg0 and arg0 <= 24:
+            hh.send(oscmsg)
 
 def motor(msg,arg0,arg1,arg2,arg3):
     global close
@@ -144,15 +149,15 @@ def hit_callback(path, tags, args, source):
         if args[0] > 86:
             pass #print (path, args[0], args[1])
         elif XY[args0][1][1] == -180:
-            pass #print (path, args[0], args[1])
+            #print (path, args[0], args[1])
             click (path, XY[args0][0], bigTop - (bigLen * args1 / bigReal ))
         elif XY[args0][1][1] == -160:
             if False == specialII.has_key(args[0]) or args[1] < specialII.get(args[0]) :
-                pass #print (path, args[0], args[1])
+                #print (path, args[0], args[1])
                 click (path, XY[args0][0], midTop - (midLen * args1 / midReal )) 
         elif XY[args0][1][1] == -100: 
             if False == special.has_key(args[0]) or args[1] < special.get(args[0]) :
-                pass #print (path, args[0], args[1])
+                #print (path, args[0], args[1])
                 click (path, XY[args0][0], smallTop - (smallLen * args1 / smallReal ))
         touchmode[args0] = TOUCHDOWN
         threading.Timer(0.5, release, (args0,args0) ).start()
@@ -165,7 +170,7 @@ def get_callback(path, tags, args, source):
     # args is a OSCMessage with data
     # source is where the message came from (in case you need to reply)
     #/BallIn
-    #print (path, args[0], args[1])
+    print (path, args[0], args[1])
     click (path, args[0], ( ( 260 * int(args[1]) )  >> 7 ) - 100 )  #260 * Y / 128 - 100  
 
 def crm(url2, myDict):
@@ -300,7 +305,7 @@ def handler(socket,fortuple):
             data, addr = sock.recvfrom(1024)
         except socket.error, e:
             pass
-special = {29:122, 34:119, 35:114, 40:143, 41:127, 46:110, 52:127, 53:122}
+special = {29:122, 34:119, 35:112, 40:143, 41:127, 46:110, 52:127, 53:120}
 specialII = {30:15, 45:161, 57:168, 85:136}
 G_SCO = 0
 G_BALLS = 0
