@@ -188,6 +188,7 @@ def ID_callback(path, tags, args, source):
     global now
     global G_SCO, G_BALLS, L_TIMES#, TRANS_SCO
     global NowMode
+    global sheetrow
     print (path, args[0])
     now = datetime.datetime.now()
     if 100 != NowMode and now.minute % 30 >= 24 :
@@ -204,22 +205,27 @@ def ID_callback(path, tags, args, source):
             print value
             value2 = crm("GetGames", {"phone": value.get('Data').get('M_ID')})
             if value2.get('Data') == value.get('Data').get('M_ID'):
-                excel.write(sheet.nrows, 1, value.get('Data').get('M_ID'))
+                try:
+                    while len(sheet(sheetrow, 0)) > 0:
+                        sheetrow+=1
+                except IndexError:
+                    SHEETROWs[value.get('Data').get('M_ID')] = sheetrow
+                excel.write(sheetrow, 1, value.get('Data').get('M_ID'))
                 cpan = value.get('Data').get('C_PAN')
                 print cpan[-1:]
                 over ("/IDdata", value.get('Data').get('M_ID'), int(value.get('Data').get('C_ID')), int(cpan[-1:])) #phone number, role number, color num
                 sock.sendto(value.get('Data').get('M_ID').encode('utf8') + "!@#" + value.get('Data').get('C_NAME').encode('utf8'),("192.168.1.202",5678))
                 sock.sendto(value.get('Data').get('M_ID').encode('utf8') + "!@#" + value.get('Data').get('C_NAME').encode('utf8'),("192.168.1.200",8765))      
                 G_SCO = int(value.get('Data').get('G_SCO'))
-                excel.write(sheet.nrows, 3, value.get('Data').get('G_SCO'))
+                excel.write(sheetrow, 3, value.get('Data').get('G_SCO'))
                 G_BALLS = int(value.get('Data').get('G_BALLS'))
-                excel.write(sheet.nrows, 2, value.get('Data').get('G_BALLS'))
+                excel.write(sheetrow, 2, value.get('Data').get('G_BALLS'))
                 #TRANS_SCO = int(value.get('Data').get('TRANS_SCO'))
                 LAST_LOGIN = value.get('Data').get('LAST_LOGIN')
                 L_TIMES = value.get('Data').get('L_TIMES')
                 XF_VIPCODE[value2.get('Data')] = value.get('Data').get('XF_VIPCODE')
-                excel.write(sheet.nrows, 0, value.get('Data').get('XF_VIPCODE'))
-                excel.write(sheet.nrows, 8, datetime.datetime.now())
+                excel.write(sheetrow, 0, value.get('Data').get('XF_VIPCODE'))
+                excel.write(sheetrow, 8, datetime.datetime.now())
                 excel.save()
                 if None == L_TIMES:
                     L_TIMES = 0
@@ -241,10 +247,10 @@ def IDscore_callback(path, tags, args, source):
     print (path, args[0], args[1], args[2]) #?™æ¬¡ç¸½å? ?™æ¬¡?²ç???
     UPDATE = {"trans":{"XF_VIPCODE":XF_VIPCODE[args[0]],"M_ID":args[0],"G_SCO":G_SCO+int(args[1]),"G_BALLS":G_BALLS+int(args[2]),"L_TIMES":int(L_TIMES)+1}}
     print UPDATE
-    excel.write(sheet.nrows, 4, args[2])
-    excel.write(sheet.nrows, 5, args[1])
-    excel.write(sheet.nrows, 6, UPDATE.get('G_BALLS'))
-    excel.write(sheet.nrows, 7, UPDATE.get('G_SCO'))
+    excel.write(SHEETROWs[args[0]], 4, args[2])
+    excel.write(SHEETROWs[args[0]], 5, args[1])
+    excel.write(SHEETROWs[args[0]], 6, UPDATE.get("trans").get('G_BALLS'))
+    excel.write(SHEETROWs[args[0]], 7, UPDATE.get("trans").get('G_SCO'))
     excel.save()
     value = crm("GetGamesdes", {"phone": args[0]})
     if(value.get('Data') == args[0]):
@@ -340,11 +346,20 @@ for ii in range (13,17):
     motor("/motor", ii, 0, 0, 0)
     sleep(0.5)
 '''
+SHEETROWs = {}
 excel = Excel( "./data.xls", "sheet1", False)
 sheet = excel.read()
-#print sheet.nrows
-#print sheet.ncols
-    
+sheetrow = sheet.nrows
+'''
+print sheet.nrows
+print sheet.ncols
+try:
+    while len(sheet(sheetrow, 0)) > 0:
+        sheetrow+=1
+except IndexError:
+    excel.write(sheetrow, 0, "Fa")
+    excel.save()
+'''
 while True:
     each_frame()
     
