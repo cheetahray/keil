@@ -11,6 +11,7 @@ import requests
 import urllib
 import threading
 import datetime
+from expy.excel import Excel
 #          1                   2                  3                 4                   5
 XY=[[-2960,[100,-100]],[-2900,[160,-160]],[-2840,[180,-180]],[-2730,[180,-180]],[-2700,[180,-180]], #1
     [-2600,[180,-180]],[-2565,[180,-180]],[-2460,[180,-180]],[-2430,[180,-180]],[-2325,[180,-180]], #2
@@ -203,17 +204,23 @@ def ID_callback(path, tags, args, source):
             print value
             value2 = crm("GetGames", {"phone": value.get('Data').get('M_ID')})
             if value2.get('Data') == value.get('Data').get('M_ID'):
+                excel.write(sheet.nrows, 1, value.get('Data').get('M_ID'))
                 cpan = value.get('Data').get('C_PAN')
                 print cpan[-1:]
                 over ("/IDdata", value.get('Data').get('M_ID'), int(value.get('Data').get('C_ID')), int(cpan[-1:])) #phone number, role number, color num
                 sock.sendto(value.get('Data').get('M_ID').encode('utf8') + "!@#" + value.get('Data').get('C_NAME').encode('utf8'),("192.168.1.202",5678))
                 sock.sendto(value.get('Data').get('M_ID').encode('utf8') + "!@#" + value.get('Data').get('C_NAME').encode('utf8'),("192.168.1.200",8765))      
                 G_SCO = int(value.get('Data').get('G_SCO'))
+                excel.write(sheet.nrows, 3, value.get('Data').get('G_SCO'))
                 G_BALLS = int(value.get('Data').get('G_BALLS'))
+                excel.write(sheet.nrows, 2, value.get('Data').get('G_BALLS'))
                 #TRANS_SCO = int(value.get('Data').get('TRANS_SCO'))
                 LAST_LOGIN = value.get('Data').get('LAST_LOGIN')
                 L_TIMES = value.get('Data').get('L_TIMES')
                 XF_VIPCODE[value2.get('Data')] = value.get('Data').get('XF_VIPCODE')
+                excel.write(sheet.nrows, 0, value.get('Data').get('XF_VIPCODE'))
+                excel.write(sheet.nrows, 8, datetime.datetime.now())
+                excel.save()
                 if None == L_TIMES:
                     L_TIMES = 0
             else:
@@ -234,7 +241,11 @@ def IDscore_callback(path, tags, args, source):
     print (path, args[0], args[1], args[2]) #?™æ¬¡ç¸½å? ?™æ¬¡?²ç???
     UPDATE = {"trans":{"XF_VIPCODE":XF_VIPCODE[args[0]],"M_ID":args[0],"G_SCO":G_SCO+int(args[1]),"G_BALLS":G_BALLS+int(args[2]),"L_TIMES":int(L_TIMES)+1}}
     print UPDATE
-    
+    excel.write(sheet.nrows, 4, args[2])
+    excel.write(sheet.nrows, 5, args[1])
+    excel.write(sheet.nrows, 6, UPDATE.get('G_BALLS'))
+    excel.write(sheet.nrows, 7, UPDATE.get('G_SCO'))
+    excel.save()
     value = crm("GetGamesdes", {"phone": args[0]})
     if(value.get('Data') == args[0]):
         value = crm("translationUpdate",UPDATE)
@@ -328,7 +339,12 @@ for ii in range (9,13):
 for ii in range (13,17):
     motor("/motor", ii, 0, 0, 0)
     sleep(0.5)
-'''            
+'''
+excel = Excel( "./data.xls", "sheet1", False)
+sheet = excel.read()
+#print sheet.nrows
+#print sheet.ncols
+    
 while True:
     each_frame()
     
