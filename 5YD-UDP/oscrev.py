@@ -205,11 +205,7 @@ def ID_callback(path, tags, args, source):
             print value
             value2 = crm("GetGames", {"phone": value.get('Data').get('M_ID')})
             if value2.get('Data') == value.get('Data').get('M_ID'):
-                try:
-                    while len(sheet(sheetrow, 0)) > 0:
-                        sheetrow+=1
-                except IndexError:
-                    SHEETROWs[value.get('Data').get('M_ID')] = sheetrow
+                SHEETROWs[value.get('Data').get('M_ID')] = sheetrow
                 excel.write(sheetrow, 1, value.get('Data').get('M_ID'))
                 cpan = value.get('Data').get('C_PAN')
                 print cpan[-1:]
@@ -227,6 +223,7 @@ def ID_callback(path, tags, args, source):
                 excel.write(sheetrow, 0, value.get('Data').get('XF_VIPCODE'))
                 excel.write(sheetrow, 8, datetime.datetime.now())
                 excel.save()
+                sheetrow+=1
                 if None == L_TIMES:
                     L_TIMES = 0
             else:
