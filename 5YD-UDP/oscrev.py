@@ -296,6 +296,11 @@ def scene_callback(path, tags, args, source):
     ll.send(oscmsg)
     #now = datetime.datetime.now()
     #print now.year, now.month, now.day, now.hour, now.minute, now.second
+
+SHEETROWs = {}
+excel = Excel( "./data.xls", "sheet1", False)
+sheet = excel.read()
+sheetrow = sheet.nrows
 	
 server.addMsgHandler( "/Hit", hit_callback )
 server.addMsgHandler( "/Get", get_callback )
@@ -343,10 +348,6 @@ for ii in range (13,17):
     motor("/motor", ii, 0, 0, 0)
     sleep(0.5)
 '''
-SHEETROWs = {}
-excel = Excel( "./data.xls", "sheet1", False)
-sheet = excel.read()
-sheetrow = sheet.nrows
 '''
 print sheet.nrows
 print sheet.ncols
