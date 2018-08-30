@@ -298,7 +298,7 @@ def scene_callback(path, tags, args, source):
     #print now.year, now.month, now.day, now.hour, now.minute, now.second
 
 SHEETROWs = {}
-excel = Excel( "./data.xls", "sheet1", False)
+excel = Excel( "C:\\Users\\goingdown\\Documents\\keil\\5YD-UDP\\data.xls", "sheet1", False)
 sheet = excel.read()
 sheetrow = sheet.nrows
 	
