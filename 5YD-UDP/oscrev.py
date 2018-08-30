@@ -186,7 +186,7 @@ def ID_callback(path, tags, args, source):
     #global run
     #run = False
     global now
-    global G_SCO, G_BALLS, L_TIMES#, TRANS_SCO
+    
     global NowMode
     global sheetrow
     print (path, args[0])
@@ -212,20 +212,21 @@ def ID_callback(path, tags, args, source):
                 over ("/IDdata", value.get('Data').get('M_ID'), int(value.get('Data').get('C_ID')), int(cpan[-1:])) #phone number, role number, color num
                 sock.sendto(value.get('Data').get('M_ID').encode('utf8') + "!@#" + value.get('Data').get('C_NAME').encode('utf8'),("192.168.1.202",5678))
                 sock.sendto(value.get('Data').get('M_ID').encode('utf8') + "!@#" + value.get('Data').get('C_NAME').encode('utf8'),("192.168.1.200",8765))      
-                G_SCO = int(value.get('Data').get('G_SCO'))
+                G_SCO[value2.get('Data')] = value.get('Data').get('G_SCO')
                 excel.write(sheetrow, 3, value.get('Data').get('G_SCO'))
-                G_BALLS = int(value.get('Data').get('G_BALLS'))
+                G_BALLS[value2.get('Data')] = value.get('Data').get('G_BALLS')
                 excel.write(sheetrow, 2, value.get('Data').get('G_BALLS'))
                 #TRANS_SCO = int(value.get('Data').get('TRANS_SCO'))
                 LAST_LOGIN = value.get('Data').get('LAST_LOGIN')
-                L_TIMES = value.get('Data').get('L_TIMES')
+                if None == value.get('Data').get('L_TIMES'):
+                    L_TIMES[value2.get('Data')] = "0"
+                else:
+                    L_TIMES[value2.get('Data')] = value.get('Data').get('L_TIMES')
                 XF_VIPCODE[value2.get('Data')] = value.get('Data').get('XF_VIPCODE')
                 excel.write(sheetrow, 0, value.get('Data').get('XF_VIPCODE'))
                 excel.write(sheetrow, 8, datetime.datetime.now())
                 excel.save()
                 sheetrow+=1
-                if None == L_TIMES:
-                    L_TIMES = 0
             else:
                 print "lock error."
                 over ("/error", "d", "d", "d")
@@ -239,10 +240,10 @@ def IDscore_callback(path, tags, args, source):
     #global run
     #run = False
     #add old data then restore back
-    global G_SCO, G_BALLS, L_TIMES#, TRANS_SCO
+    
     retupdate = 0
     print (path, args[0], args[1], args[2]) #?™æ¬¡ç¸½å? ?™æ¬¡?²ç???
-    UPDATE = {"trans":{"XF_VIPCODE":XF_VIPCODE[args[0]],"M_ID":args[0],"G_SCO":G_SCO+int(args[1]),"G_BALLS":G_BALLS+int(args[2]),"L_TIMES":int(L_TIMES)+1}}
+    UPDATE = {"trans":{"XF_VIPCODE":XF_VIPCODE[args[0]],"M_ID":args[0],"G_SCO":int(G_SCO[args[0]])+int(args[1]),"G_BALLS":int(G_BALLS[args[0]])+int(args[2]),"L_TIMES":int(L_TIMES[args[0]])+1}}
     print UPDATE
     excel.write(SHEETROWs[args[0]], 4, args[2])
     excel.write(SHEETROWs[args[0]], 5, args[1])
@@ -326,10 +327,10 @@ def handler(socket,fortuple):
             pass
 special = {29:122, 34:119, 35:112, 40:143, 41:127, 46:110, 52:127, 53:120}
 specialII = {30:15, 45:161, 57:168, 85:136}
-G_SCO = 0
-G_BALLS = 0
+G_SCO = {}
+G_BALLS = {}
 #TRANS_SCO = 0
-L_TIMES = 0
+L_TIMES = {}
 XF_VIPCODE = {}
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 #sock.bind(("0.0.0.0", 8756))
