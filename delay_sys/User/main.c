@@ -445,6 +445,18 @@ void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *d
     int16_t retAngle=calAngle();
     //uint16_t idx= (COLUMBS-howmanyled)*retAngle/360;
     int16_t whichone;
+	  leftbool = ( (baseAngle-retAngle) > 25 );
+    rightbool = ( (retAngle-baseAngle) > 25 ); 
+    if(leftbool != (*lastleft) )
+    {
+        LEFT_ONOFF(leftbool);
+        (*lastleft) = leftbool;
+    }	
+    if (rightbool != (*lastright) )
+    {
+        RIGHT_ONOFF(rightbool);
+        (*lastright) = rightbool;
+    }
     if (retAngle > baseAngle)
         retAngle = baseAngle - ( retAngle - baseAngle );
     else
@@ -589,18 +601,6 @@ void rotary_Matrix(uint8_t *nowho, uint8_t *restone, uint8_t *restwo, uint8_t *d
         }
     }
     rotaryUart("1.", retAngle);
-    leftbool = ( (baseAngle-retAngle) > 25 );
-    rightbool = ( (retAngle-baseAngle) > 25 ); 
-    if(leftbool != (*lastleft) )
-    {
-        LEFT_ONOFF(leftbool);
-        (*lastleft) = leftbool;
-    }	
-    if (rightbool != (*lastright) )
-    {
-        RIGHT_ONOFF(rightbool);
-        (*lastright) = rightbool;
-    }
     /*
     rotaryUart("2.", *idx);
     rotaryUart("3.", *nowho);
